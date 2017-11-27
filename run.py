@@ -1,6 +1,5 @@
-from flask import Flask, render_template, send_from_directory
-
-app = Flask(__name__, static_url_path='', static_folder='')
+from controller import app
+from flask import send_from_directory, render_template
 
 
 @app.route('/js/<path:path>')
