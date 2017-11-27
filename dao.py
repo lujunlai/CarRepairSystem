@@ -21,7 +21,7 @@ db = SQLAlchemy(app)
 
 
 # RepairOrder class
-class RepairOrder(db.Model):
+class RepairOrderDao(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     car_collector_name = db.Column(db.String(80))
     dispatcher_name = db.Column(db.String(80))
@@ -33,9 +33,12 @@ class RepairOrder(db.Model):
     repair_end_time = db.Column(db.DateTime)
     is_delete = db.Column(db.Boolean)
 
+    def __init__(self):
+        pass
+
     # 接车员接到车主时，未注册先注册，注册完进行初始化订单操作
     # 涉及内容，接车员名字，调度员名字， 车辆id， 维修费用， 维修开始时间
-    def __init__(self, car_collector_name, dispatcher_name, car_id, repair_money_total, repair_start_time):
+    def collector(self, car_collector_name, dispatcher_name, car_id, repair_money_total, repair_start_time):
         self.car_collector_name = car_collector_name
         self.dispatcher_name = dispatcher_name
         self.car_id = car_id
@@ -58,16 +61,15 @@ class RepairOrder(db.Model):
 
     # 删除记录
     def delete(self):
-        RepairOrder.query.filter_by(id=self.id).update({'is_delete': True})
+        RepairOrderDao.query.filter_by(id=self.id).update({'is_delete': True})
         db.session.commit()
-
 
     def __repr__(self):
         return '<RepairOrder %r>' % self.id
 
 
 # CarOwner class
-class CarOwner(db.Model):
+class CarOwnerDao(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     car_owner_name = db.Column(db.String(80))
     car_owner_number = db.Column(db.String(80), unique=True)
@@ -83,7 +85,7 @@ class CarOwner(db.Model):
 
 
 # Car class
-class Car(db.Model):
+class CarDao(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     car_owner_id = db.Column(db.Integer)
     car_brand = db.Column(db.String(80))
@@ -95,7 +97,7 @@ class Car(db.Model):
 
 
 # RepairProject class
-class RepairProject(db.Model):
+class RepairProjectDao(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     repair_material_id = db.Column(db.Integer)
     repair_order_id = db.Column(db.Integer)
@@ -107,7 +109,7 @@ class RepairProject(db.Model):
 
 
 # RepairMaterial class
-class RepairMaterial(db.Model):
+class RepairMaterialDao(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     repair_material_name = db.Column(db.String(80))
     repair_material_has_amount = db.Column(db.Integer)
