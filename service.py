@@ -1,4 +1,4 @@
-# encoding=uft8
+# encoding=utf8
 
 
 from dao import app, RepairOrderDao

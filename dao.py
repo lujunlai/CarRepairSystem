@@ -120,4 +120,3 @@ class RepairMaterialDao(db.Model):
 
 
 db.create_all()
-
