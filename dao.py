@@ -25,6 +25,9 @@ db = SQLAlchemy(app)
 
 # RepairOrder class
 class RepairOrderDao(db.Model):
+
+    __tablename__ = 'repair_order'
+
     id = db.Column(db.Integer, primary_key=True)
     car_collector_name = db.Column(db.String(80))
     dispatcher_name = db.Column(db.String(80))
@@ -32,6 +35,7 @@ class RepairOrderDao(db.Model):
     inspector_name = db.Column(db.String(80))
     car_id = db.Column(db.Integer)
     repair_money_total = db.Column(db.Float)
+    repair_order_status = db.Column(db.Boolean)
     create_time = db.Column(db.DateTime)
     update_time = db.Column(db.DateTime)
     is_delete = db.Column(db.Boolean)
@@ -42,6 +46,7 @@ class RepairOrderDao(db.Model):
         self.dispatcher_name = dispatcher_name
         self.car_id = car_id
         self.repair_money_total = repair_money_total
+        self.repair_order_status = False
         self.create_time = create_time
         self.repairman_name = repairman_name
         self.inspector_name = inspector_name
@@ -51,12 +56,12 @@ class RepairOrderDao(db.Model):
     # 插入记录
     def insert(self):
         db.session.add(self)
-        db.session.commit()
+        # db.session.commit()
 
     # 更新记录
     @staticmethod
-    def update(repair_order_id, car_collector_name, dispatcher_name, car_id, repair_money_total, create_time,
-               repairman_name, inspector_name, update_time):
+    def update(repair_order_id, car_collector_name, dispatcher_name, car_id, repair_money_total,
+               repairman_name, inspector_name, repair_order_status, create_time, update_time):
         update_dict = dict()
         if car_collector_name is not None:
             update_dict['car_collector_name'] = car_collector_name
@@ -64,6 +69,8 @@ class RepairOrderDao(db.Model):
             update_dict['dispatcher_name'] = dispatcher_name
         if car_id is not None:
             update_dict['car_id'] = car_id
+        if repair_order_status is not None:
+            update_dict['repair_order_status'] = repair_order_status
         if repair_money_total is not None:
             update_dict['repair_money_total'] = repair_money_total
         if create_time is not None:
@@ -75,24 +82,25 @@ class RepairOrderDao(db.Model):
         if update_time is not None:
             update_dict['update_time'] = update_time
         RepairOrderDao.query.filter_by(id=repair_order_id).update(update_dict)
-        db.session.commit()
+        # db.session.commit()
 
     # 删除记录
-    def delete(self):
+    @staticmethod
+    def delete(repair_order_id):
         update_dict = dict()
         update_dict['is_delete'] = True
-        RepairOrderDao.query.filter_by(id=self.id).update(update_dict)
-        db.session.commit()
+        RepairOrderDao.query.filter_by(id=repair_order_id).update(update_dict)
+        # db.session.commit()
 
     # 查询记录
     @staticmethod
     def select():
-        return RepairOrderDao.query.all()
+        return RepairOrderDao.query.filter_by(is_delete=False).all()
 
     # 通过id查询
     @staticmethod
     def select_by_id(repair_order_id):
-        return RepairOrderDao.query.filter_by(id=repair_order_id).first()
+        return RepairOrderDao.query.filter_by(id=repair_order_id, is_delete=False).first()
 
     def __repr__(self):
         return '<RepairOrder %r>' % self.id
@@ -100,6 +108,9 @@ class RepairOrderDao(db.Model):
 
 # CarOwner class
 class CarOwnerDao(db.Model):
+
+    __tablename__ = 'car_owner'
+
     id = db.Column(db.Integer, primary_key=True)
     car_owner_name = db.Column(db.String(80))
     car_owner_number = db.Column(db.String(80), unique=True)
@@ -117,7 +128,7 @@ class CarOwnerDao(db.Model):
     # 插入记录
     def insert(self):
         db.session.add(self)
-        db.session.commit()
+        # db.session.commit()
 
     # 更新记录
     @staticmethod
@@ -132,24 +143,25 @@ class CarOwnerDao(db.Model):
         if update_time is not None:
             update_dict['update_time'] = update_time
         CarOwnerDao.query.filter_by(id=car_owner_id).update(update_dict)
-        db.session.commit()
+        # db.session.commit()
 
     # 删除记录
-    def delete(self):
+    @staticmethod
+    def delete(car_owner_id):
         update_dict = dict()
         update_dict['is_delete'] = True
-        CarOwnerDao.query.filter_by(id=self.id).update(update_dict)
-        db.session.commit()
+        CarOwnerDao.query.filter_by(id=car_owner_id).update(update_dict)
+        # db.session.commit()
 
     # 查询记录
     @staticmethod
     def select():
-        return CarOwnerDao.query.all()
+        return CarOwnerDao.query.filter_by(is_delete=False).all()
 
     # 通过id查询
     @staticmethod
     def select_by_id(car_owner_id):
-        return RepairOrderDao.query.filter_by(id=car_owner_id).first()
+        return RepairOrderDao.query.filter_by(id=car_owner_id, is_delete=False).first()
 
     def __repr__(self):
         return '<CarOwner %r>' % self.id
@@ -157,6 +169,9 @@ class CarOwnerDao(db.Model):
 
 # Car class
 class CarDao(db.Model):
+
+    __tablename__ = 'car'
+
     id = db.Column(db.Integer, primary_key=True)
     car_owner_id = db.Column(db.Integer)
     car_brand = db.Column(db.String(80))
@@ -176,7 +191,7 @@ class CarDao(db.Model):
     # 插入记录
     def insert(self):
         db.session.add(self)
-        db.session.commit()
+        # db.session.commit()
 
     # 更新记录
     @staticmethod
@@ -193,24 +208,25 @@ class CarDao(db.Model):
         if update_time is not None:
             update_dict['update_time'] = update_time
             CarDao.query.filter_by(id=car_id).update(update_dict)
-        db.session.commit()
+        # db.session.commit()
 
     # 删除记录
-    def delete(self):
+    @staticmethod
+    def delete(car_id):
         update_dict = dict()
         update_dict['is_delete'] = True
-        CarDao.query.filter_by(id=self.id).update(update_dict)
-        db.session.commit()
+        CarDao.query.filter_by(id=car_id).update(update_dict)
+        # db.session.commit()
 
     # 查询记录
     @staticmethod
     def select():
-        return CarDao.query.all()
+        return CarDao.query.filter_by(is_delete=False).all()
 
     # 通过id查询
     @staticmethod
     def select_by_id(car_id):
-        return CarDao.query.filter_by(id=car_id).first()
+        return CarDao.query.filter_by(id=car_id, is_delete=False).first()
 
     def __repr__(self):
         return '<Car %r>' % self.id
@@ -218,6 +234,9 @@ class CarDao(db.Model):
 
 # RepairProject class
 class RepairProjectDao(db.Model):
+
+    __tablename__ = 'repair_project'
+
     id = db.Column(db.Integer, primary_key=True)
     repair_project_name = db.Column(db.String(80))
     repair_material_id = db.Column(db.Integer)
@@ -229,12 +248,12 @@ class RepairProjectDao(db.Model):
     is_delete = db.Column(db.Boolean)
 
     def __init__(self, repair_project_name, repair_material_id, repair_order_id, repair_material_cost_amount,
-                 repair_material_status, create_time, update_time):
+                 create_time, update_time):
         self.repair_project_name = repair_project_name
         self.repair_material_id = repair_material_id
         self.repair_order_id = repair_order_id
         self.repair_material_cost_amount = repair_material_cost_amount
-        self.repair_material_status = repair_material_status
+        self.repair_material_status = False
         self.create_time = create_time
         self.update_time = update_time
         self.is_delete = False
@@ -242,12 +261,12 @@ class RepairProjectDao(db.Model):
     # 插入记录
     def insert(self):
         db.session.add(self)
-        db.session.commit()
+        # db.session.commit()
 
     # 更新记录
     @staticmethod
     def update(repair_project_id, repair_project_name, repair_material_id, repair_order_id, repair_material_cost_amount,
-                 repair_material_status, create_time, update_time):
+               repair_material_status, create_time, update_time):
         update_dict = dict()
         if repair_project_name is not None:
             update_dict['repair_project_name'] = repair_project_name
@@ -264,24 +283,25 @@ class RepairProjectDao(db.Model):
         if update_time is not None:
             update_dict['update_time'] = update_time
             RepairProjectDao.query.filter_by(id=repair_project_id).update(update_dict)
-        db.session.commit()
+        # db.session.commit()
 
     # 删除记录
-    def delete(self):
+    @staticmethod
+    def delete(repair_project_id):
         update_dict = dict()
         update_dict['is_delete'] = True
-        RepairProjectDao.query.filter_by(id=self.id).update(update_dict)
-        db.session.commit()
+        RepairProjectDao.query.filter_by(id=repair_project_id).update(update_dict)
+        # db.session.commit()
 
     # 查询记录
     @staticmethod
     def select():
-        return RepairProjectDao.query.all()
+        return RepairProjectDao.query.filter_by(is_delete=False).all()
 
     # 通过id查询
     @staticmethod
     def select_by_id(repair_project_id):
-        return RepairProjectDao.query.filter_by(id=repair_project_id).first()
+        return RepairProjectDao.query.filter_by(id=repair_project_id, is_delete=False).first()
 
     def __repr__(self):
         return '<RepairProject %r>' % self.id
@@ -289,6 +309,9 @@ class RepairProjectDao(db.Model):
 
 # RepairMaterial class
 class RepairMaterialDao(db.Model):
+
+    __tablename__ = 'repair_material'
+
     id = db.Column(db.Integer, primary_key=True)
     repair_material_name = db.Column(db.String(80), unique=True)
     repair_material_has_amount = db.Column(db.Integer)
@@ -306,7 +329,7 @@ class RepairMaterialDao(db.Model):
     # 插入记录
     def insert(self):
         db.session.add(self)
-        db.session.commit()
+        # db.session.commit()
 
     # 更新记录
     @staticmethod
@@ -321,24 +344,25 @@ class RepairMaterialDao(db.Model):
         if update_time is not None:
             update_dict['update_time'] = update_time
             RepairMaterialDao.query.filter_by(id=repair_material_id).update(update_dict)
-        db.session.commit()
+        # db.session.commit()
 
     # 删除记录
-    def delete(self):
+    @staticmethod
+    def delete(repair_material_id):
         update_dict = dict()
         update_dict['is_delete'] = True
-        RepairMaterialDao.query.filter_by(id=self.id).update(update_dict)
-        db.session.commit()
+        RepairMaterialDao.query.filter_by(id=repair_material_id).update(update_dict)
+        # db.session.commit()
 
     # 查询记录
     @staticmethod
     def select():
-        return RepairMaterialDao.query.all()
+        return RepairMaterialDao.query.filter_by(is_delete=False).all()
 
     # 通过id查询
     @staticmethod
     def select_by_id(repair_project_id):
-        return RepairMaterialDao.query.filter_by(id=repair_project_id).first()
+        return RepairMaterialDao.query.filter_by(id=repair_project_id, is_delete=False).first()
 
     def __repr__(self):
         return '<RepairMaterial %r>' % self.id
@@ -347,7 +371,8 @@ class RepairMaterialDao(db.Model):
 db.create_all()
 
 if __name__ == "__main__":
-    # repair_order_test = RepairOrderDao('car_collector_name', 'dispatcher_name', 1, 0,
-    # 'repairman_name', 'inspector_name', datetime.now(), datetime.now())
-    # repair_order_test.insert()
-    print RepairOrderDao.select_by_id(1)
+    repair_order_test = RepairOrderDao('car_collector_name', 'dispatcher_name', 1, 1,
+                                       'repairman_name', 'inspector_name', datetime.now(), datetime.now())
+    repair_order_test.insert()
+    repair_order = RepairOrderDao.select_by_id(1)
+    print 'xxx'
