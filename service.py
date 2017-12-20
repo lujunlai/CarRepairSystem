@@ -1,7 +1,7 @@
 #   encoding=utf8
 # service 业务逻辑，数据一致性
 
-from dao import app
+from dao import *
 
 
 class RepairOrderService:
@@ -13,7 +13,7 @@ class RepairOrderService:
     # 输出：
     # 功能：
     @staticmethod
-    def insert():
+    def insert(car_collector_name, dispatcher_name, car_id, repair_money_total, repairman_name, inspector_name):
         pass
 
     # 输入：
