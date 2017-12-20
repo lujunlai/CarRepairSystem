@@ -1,4 +1,4 @@
-from controller import app
+from service import app
 from flask import send_from_directory, render_template
 
 

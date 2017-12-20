@@ -1,4 +1,5 @@
 #   encoding=utf8
+# dao 数据库操作
 # 接车员 car_collector
 # 调度员 dispatcher
 # 维修员 repairman
@@ -33,36 +34,61 @@ class RepairOrderDao(db.Model):
     repair_end_time = db.Column(db.DateTime)
     is_delete = db.Column(db.Boolean)
 
-    def __init__(self):
-        pass
-
-    # 接车员接到车主时，未注册先注册，注册完进行初始化订单操作
-    # 涉及内容，接车员名字，调度员名字， 车辆id， 维修费用， 维修开始时间
-    def collector(self, car_collector_name, dispatcher_name, car_id, repair_money_total, repair_start_time):
+    # 插入记录
+    def __init__(self, car_collector_name, dispatcher_name, car_id, repair_money_total, repair_start_time,
+                 repairman_name, inspector_name, repair_end_time):
         self.car_collector_name = car_collector_name
         self.dispatcher_name = dispatcher_name
         self.car_id = car_id
         self.repair_money_total = repair_money_total
         self.repair_start_time = repair_start_time
-        self.is_delete = False
-
-    # 调度员接到任务后进行维修派工和质检派工
-    # 涉及内容， 维修员名字， 质检员名字
-    def dispatcher(self, repairman_name, inspector_name):
         self.repairman_name = repairman_name
         self.inspector_name = inspector_name
-
-    # 质检完成后打上维修结束时间
-    # 涉及内容， 维修结束时间
-    def finish(self, repair_end_time):
         self.repair_end_time = repair_end_time
+        self.is_delete = False
         db.session.add(self)
+        db.session.commit()
+
+    # 更新记录
+    @staticmethod
+    def update(repair_order_id, car_collector_name, dispatcher_name, car_id, repair_money_total, repair_start_time,
+               repairman_name, inspector_name, repair_end_time):
+        update_dict = dict()
+        if car_collector_name is not None:
+            update_dict['car_collector_name'] = car_collector_name
+        if dispatcher_name is not None:
+            update_dict['dispatcher_name'] = dispatcher_name
+        if car_id is not None:
+            update_dict['car_id'] = car_id
+        if repair_money_total is not None:
+            update_dict['repair_money_total'] = repair_money_total
+        if repair_start_time is not None:
+            update_dict['repair_start_time'] = repair_start_time
+        if repairman_name is not None:
+            update_dict['repairman_name'] = repairman_name
+        if inspector_name is not None:
+            update_dict['inspector_name'] = inspector_name
+        if repair_end_time is not None:
+            update_dict['repair_end_time'] = repair_end_time
+        RepairOrderDao.query.filter_by(id=repair_order_id).update(update_dict)
         db.session.commit()
 
     # 删除记录
     def delete(self):
-        RepairOrderDao.query.filter_by(id=self.id).update({'is_delete': True})
+        update_dict = dict()
+        update_dict['is_delete'] = True
+        RepairOrderDao.query.filter_by(id=self.id).update(update_dict)
         db.session.commit()
+
+    # 查询记录
+    @staticmethod
+    def select():
+        return RepairOrderDao.query.all()
+
+    # 通过id查询
+    @staticmethod
+    def select_by_id(repair_order_id):
+        return RepairOrderDao.query.filter_by(id=repair_order_id)
 
     def __repr__(self):
         return '<RepairOrder %r>' % self.id
@@ -99,9 +125,11 @@ class CarDao(db.Model):
 # RepairProject class
 class RepairProjectDao(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    repair_project_name = db.Column(db.String(80))
     repair_material_id = db.Column(db.Integer)
     repair_order_id = db.Column(db.Integer)
     repair_material_cost_amount = db.Column(db.Integer)
+    repair_material_status = db.Column(db.Boolean)
     is_delete = db.Column(db.Boolean)
 
     def __repr__(self):
