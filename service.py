@@ -28,14 +28,14 @@ class RepairOrderService:
                                           repairman_name, inspector_name, insert_time, insert_time)
         new_repair_order.insert()
 
-        material_project_dicts = insert_dict.get('material_project_dicts')
-        for material_project_dict in material_project_dicts:
-            repair_project_name = material_project_dict.get('repair_project_name')
-            repair_material_id = material_project_dict.get('repair_material_id')
-            repair_material_cost_amount = material_project_dict.get('repair_material_cost_amount')
-            temp_material_project = RepairProjectDao(repair_project_name, repair_material_id, new_repair_order.id,
-                                                     repair_material_cost_amount, insert_time, insert_time)
-            temp_material_project.insert()
+        repair_project_dicts = insert_dict.get('repair_project_dicts')
+        for repair_project_dict in repair_project_dicts:
+            repair_project_name = repair_project_dict.get('repair_project_name')
+            repair_material_id = repair_project_dict.get('repair_material_id')
+            repair_material_cost_amount = repair_project_dict.get('repair_material_cost_amount')
+            temp_repair_project = RepairProjectDao(repair_project_name, repair_material_id, new_repair_order.id,
+                                                   repair_material_cost_amount, insert_time, insert_time)
+            temp_repair_project.insert()
 
         return db_commit(new_repair_order)
 
@@ -49,10 +49,10 @@ class RepairOrderService:
         repair_project_name = insert_dict.get('repair_project_name')
         repair_material_id = insert_dict.get('repair_material_id')
         repair_material_cost_amount = insert_dict.get('repair_material_cost_amount')
-        new_material_project = RepairProjectDao(repair_project_name, repair_material_id, repair_order_id,
-                                                repair_material_cost_amount, insert_time, insert_time)
-        new_material_project.insert()
-        return db_commit(new_material_project)
+        new_repair_project = RepairProjectDao(repair_project_name, repair_material_id, repair_order_id,
+                                              repair_material_cost_amount, insert_time, insert_time)
+        new_repair_project.insert()
+        return db_commit(new_repair_project)
 
     # 输入：订单信息 Dict
     # 输出：订单对象 RepairOrderDao
@@ -72,12 +72,12 @@ class RepairOrderService:
         RepairOrderDao.update(repair_order_id, car_collector_name, dispatcher_name, car_id, repair_money_total,
                               repairman_name, inspector_name, repair_order_status, None, update_time)
 
-        material_project_dicts = update_dict.get('material_project_dicts')
-        for material_project_dict in material_project_dicts:
-            repair_project_id = material_project_dict.get('repair_project_id')
-            repair_project_name = material_project_dict.get('repair_project_name')
-            repair_material_id = material_project_dict.get('repair_material_id')
-            repair_material_cost_amount = material_project_dict.get('repair_material_cost_amount')
+        repair_project_dicts = update_dict.get('repair_project_dicts')
+        for repair_project_dict in repair_project_dicts:
+            repair_project_id = repair_project_dict.get('repair_project_id')
+            repair_project_name = repair_project_dict.get('repair_project_name')
+            repair_material_id = repair_project_dict.get('repair_material_id')
+            repair_material_cost_amount = repair_project_dict.get('repair_material_cost_amount')
 
             RepairProjectDao.update(repair_project_id, repair_project_name, repair_material_id, None,
                                     repair_material_cost_amount, False, None, update_time)
@@ -95,7 +95,7 @@ class RepairOrderService:
     # 输出：订单对象列表 List<RepairProjectDao>
     # 功能：查询材料项目信息
     @staticmethod
-    def select_material_project(repair_order_id, start, page_size):
+    def select_repair_project(repair_order_id, start, page_size):
         return db_select(RepairProjectDao.select_by_repair_order_id(repair_order_id, start, page_size))
 
     # 输入：订单id Int
@@ -230,6 +230,14 @@ class CarOwnerService:
         new_car = CarDao(car_owner_id, car_brand, plate_number, insert_time, insert_time)
         new_car.insert()
         return db_commit(new_car)
+
+    # 输入：车辆id Int
+    # 输出：
+    # 功能：删除车辆信息 包括car表
+    @staticmethod
+    def delete_car(car_id):
+        CarDao.delete(car_id)
+        return db_commit(None)
 
     # 输入：车主信息 Dict
     # 输出：车主对象 CarOwnerDao
