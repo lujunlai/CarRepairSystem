@@ -14,6 +14,7 @@
 from flask import Flask
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.schema import CheckConstraint
 
 app = Flask(__name__, static_url_path='', static_folder='')
 
@@ -94,10 +95,10 @@ class RepairOrderDao(db.Model):
 
     # 查询记录
     @staticmethod
-    def select():
-        return RepairOrderDao.query.filter_by(is_delete=False).all()
+    def select(start, page_size):
+        return RepairOrderDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all()
 
-    # 通过id查询
+    # 通过repair_order_id查询
     @staticmethod
     def select_by_id(repair_order_id):
         return RepairOrderDao.query.filter_by(id=repair_order_id, is_delete=False).first()
@@ -155,13 +156,18 @@ class CarOwnerDao(db.Model):
 
     # 查询记录
     @staticmethod
-    def select():
-        return CarOwnerDao.query.filter_by(is_delete=False).all()
+    def select(start, page_size):
+        return CarOwnerDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all()
 
-    # 通过id查询
+    # 通过car_owner_id查询
     @staticmethod
     def select_by_id(car_owner_id):
         return RepairOrderDao.query.filter_by(id=car_owner_id, is_delete=False).first()
+
+    # 通过car_owner_number查询
+    @staticmethod
+    def select_by_car_owner_number(car_owner_number):
+        return RepairOrderDao.query.filter_by(car_owner_number=car_owner_number, is_delete=False).first()
 
     def __repr__(self):
         return '<CarOwner %r>' % self.id
@@ -218,15 +224,33 @@ class CarDao(db.Model):
         CarDao.query.filter_by(id=car_id).update(update_dict)
         # db.session.commit()
 
+    # 删除记录
+    @staticmethod
+    def delete_by_car_owner_id(car_owner_id):
+        update_dict = dict()
+        update_dict['is_delete'] = True
+        CarDao.query.filter_by(car_owner_id=car_owner_id).update(update_dict)
+        # db.session.commit()
+
     # 查询记录
     @staticmethod
-    def select():
-        return CarDao.query.filter_by(is_delete=False).all()
+    def select(start, page_size):
+        return CarDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all()
 
-    # 通过id查询
+    # 通过car_id查询
     @staticmethod
     def select_by_id(car_id):
         return CarDao.query.filter_by(id=car_id, is_delete=False).first()
+
+    # 通过plate_number查询
+    @staticmethod
+    def select_by_plate_number(plate_number):
+        return CarDao.query.filter_by(plate_number=plate_number, is_delete=False).first()
+
+    # 通过car_owner_id查询
+    @staticmethod
+    def select_by_car_owner_id(car_owner_id, start, page_size):
+        return CarDao.query.filter_by(car_owner_id=car_owner_id, is_delete=False).offset(start).limit(page_size).all()
 
     def __repr__(self):
         return '<Car %r>' % self.id
@@ -293,15 +317,29 @@ class RepairProjectDao(db.Model):
         RepairProjectDao.query.filter_by(id=repair_project_id).update(update_dict)
         # db.session.commit()
 
+    # 删除记录
+    @staticmethod
+    def delete_by_repair_order_id(repair_order_id):
+        update_dict = dict()
+        update_dict['is_delete'] = True
+        RepairProjectDao.query.filter_by(repair_order_id=repair_order_id).update(update_dict)
+        # db.session.commit()
+
     # 查询记录
     @staticmethod
-    def select():
-        return RepairProjectDao.query.filter_by(is_delete=False).all()
+    def select(start, page_size):
+        return RepairProjectDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all()
 
-    # 通过id查询
+    # 通过repair_project_id查询
     @staticmethod
     def select_by_id(repair_project_id):
         return RepairProjectDao.query.filter_by(id=repair_project_id, is_delete=False).first()
+
+    # 通过repair_order_id查询
+    @staticmethod
+    def select_by_repair_order_id(repair_order_id, start, page_size):
+        return RepairProjectDao.query.filter_by(repair_order_id=repair_order_id, is_delete=False).offset(start).limit(
+            page_size).all()
 
     def __repr__(self):
         return '<RepairProject %r>' % self.id
@@ -314,7 +352,7 @@ class RepairMaterialDao(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     repair_material_name = db.Column(db.String(80), unique=True)
-    repair_material_has_amount = db.Column(db.Integer)
+    repair_material_has_amount = db.Column(db.Integer, CheckConstraint('repair_material_has_amount>0'))
     create_time = db.Column(db.DateTime)
     update_time = db.Column(db.DateTime)
     is_delete = db.Column(db.Boolean)
@@ -346,6 +384,12 @@ class RepairMaterialDao(db.Model):
             RepairMaterialDao.query.filter_by(id=repair_material_id).update(update_dict)
         # db.session.commit()
 
+    # 修改数量
+    @staticmethod
+    def update_amount(repair_material_id, change_number):
+        repair_material = RepairMaterialDao.query.filter_by(id=repair_material_id).first()
+        repair_material.repair_material_has_amount = repair_material.repair_material_has_amount + change_number
+
     # 删除记录
     @staticmethod
     def delete(repair_material_id):
@@ -356,13 +400,13 @@ class RepairMaterialDao(db.Model):
 
     # 查询记录
     @staticmethod
-    def select():
-        return RepairMaterialDao.query.filter_by(is_delete=False).all()
+    def select(start, page_size):
+        return RepairMaterialDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all()
 
-    # 通过id查询
+    # 通过repair_material_id查询
     @staticmethod
-    def select_by_id(repair_project_id):
-        return RepairMaterialDao.query.filter_by(id=repair_project_id, is_delete=False).first()
+    def select_by_id(repair_material_id):
+        return RepairMaterialDao.query.filter_by(id=repair_material_id, is_delete=False).first()
 
     def __repr__(self):
         return '<RepairMaterial %r>' % self.id
@@ -371,8 +415,12 @@ class RepairMaterialDao(db.Model):
 db.create_all()
 
 if __name__ == "__main__":
-    repair_order_test = RepairOrderDao('car_collector_name', 'dispatcher_name', 1, 1,
-                                       'repairman_name', 'inspector_name', datetime.now(), datetime.now())
-    repair_order_test.insert()
-    repair_order = RepairOrderDao.select_by_id(1)
+    now = datetime.now()
+    # repair_order_test = RepairOrderDao('car_collector_name', 'dispatcher_name', 1, 1,
+    #                                    'repairman_name', 'inspector_name', datetime.now(), datetime.now())
+    # repair_order_test.insert()
+    # repair_order = RepairOrderDao.select_by_id(1)
+    # repair_material_test = RepairMaterialDao('repair_material_name', -1, now, now)
+    # repair_material_test.insert()
+    # db.session.commit()
     print 'xxx'
