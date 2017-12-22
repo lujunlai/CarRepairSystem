@@ -106,6 +106,21 @@ class RepairOrderDao(db.Model):
     def __repr__(self):
         return '<RepairOrder %r>' % self.id
 
+    @property
+    def serialize(self):
+        return {
+            "id": self.id,
+            "car_collector_name": self.car_collector_name,
+            "dispatcher_name": self.dispatcher_name,
+            "repairman_name": self.repairman_name,
+            "inspector_name": self.inspector_name,
+            "car_id": self.car_id,
+            "repair_money_total": self.repair_money_total,
+            "repair_order_status": self.repair_order_status,
+            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "update_time": self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
 
 # CarOwner class
 class CarOwnerDao(db.Model):
@@ -171,6 +186,16 @@ class CarOwnerDao(db.Model):
 
     def __repr__(self):
         return '<CarOwner %r>' % self.id
+
+    @property
+    def serialize(self):
+        return {
+            "id": self.id,
+            "car_owner_name": self.car_owner_name,
+            "car_owner_number": self.car_owner_number,
+            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "update_time": self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
+        }
 
 
 # Car class
@@ -254,6 +279,17 @@ class CarDao(db.Model):
 
     def __repr__(self):
         return '<Car %r>' % self.id
+
+    @property
+    def serialize(self):
+        return {
+            "id": self.id,
+            "car_owner_id": self.car_owner_id,
+            "car_brand": self.car_brand,
+            "plate_number": self.plate_number,
+            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "update_time": self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
+        }
 
 
 # RepairProject class
@@ -344,6 +380,21 @@ class RepairProjectDao(db.Model):
     def __repr__(self):
         return '<RepairProject %r>' % self.id
 
+    @property
+    def serialize(self):
+        return {
+            "id": self.id,
+            "car_collector_name": self.car_collector_name,
+            "dispatcher_name": self.dispatcher_name,
+            "repairman_name": self.repairman_name,
+            "inspector_name": self.inspector_name,
+            "car_id": self.car_id,
+            "repair_money_total": self.repair_money_total,
+            "repair_order_status": self.repair_order_status,
+            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "update_time": self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
 
 # RepairMaterial class
 class RepairMaterialDao(db.Model):
@@ -410,6 +461,16 @@ class RepairMaterialDao(db.Model):
 
     def __repr__(self):
         return '<RepairMaterial %r>' % self.id
+
+    @property
+    def serialize(self):
+        return {
+            "id": self.id,
+            "repair_material_name": self.repair_material_name,
+            "repair_material_has_amount": self.repair_material_has_amount,
+            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "update_time": self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
+        }
 
 
 db.create_all()
