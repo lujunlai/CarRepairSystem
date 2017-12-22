@@ -60,9 +60,8 @@ class RepairProjectService:
             repair_project_name = repair_project_dict.get('repair_project_name')
             repair_material_id = repair_project_dict.get('repair_material_id')
             repair_material_cost_amount = repair_project_dict.get('repair_material_cost_amount')
-            temp_repair_project = RepairProjectDao.update(repair_project_id, repair_project_name, repair_material_id,
-                                                          None, repair_material_cost_amount, None, None, update_time)
-            temp_repair_project.insert()
+            RepairProjectDao.update(repair_project_id, repair_project_name, repair_material_id, None,
+                                    repair_material_cost_amount, None, None, update_time)
 
         return db_commit(RepairProjectDao.select_by_repair_order_id(repair_order_id, start, page_size))
 
@@ -235,8 +234,10 @@ class MaterialService:
         repair_projects = RepairProjectDao.select_by_repair_order_id(repair_order_id, 0, -1)
 
         for repair_project in repair_projects:
-            RepairProjectDao.update(repair_project.id, None, None, None, None, True, None, update_time)
-            RepairMaterialDao.update_amount(repair_project.id, -repair_project.repair_material_cost_amount)
+            if repair_project.repair_material_status is False:
+                RepairProjectDao.update(repair_project.id, None, None, None, None, True, None, update_time)
+                RepairMaterialDao.update_amount(repair_project.repair_material_id,
+                                                -repair_project.repair_material_cost_amount)
 
         return db_commit(RepairOrderDao.select_by_id(repair_order_id))
 
@@ -290,8 +291,7 @@ class CarService:
             car_id = car_dict.get('car_id')
             car_brand = car_dict.get('car_brand')
             plate_number = car_dict.get('plate_number')
-            temp_car = CarDao.update(car_id, None, car_brand, plate_number, None, update_time)
-            temp_car.insert()
+            CarDao.update(car_id, None, car_brand, plate_number, None, update_time)
 
         return db_commit(CarDao.select_by_car_owner_id(car_owner_id, start, page_size))
 
@@ -400,15 +400,13 @@ class Result:
     @property
     def serialize(self):
         result_dict = {"status": self.status}
-        if type(self.message) == list:
-            message_list = list()
-            for mes in self.message:
-                message_list.append(mes.serialize)
-            result_dict["message"] = message_list
-        elif type(self.message) not in [RepairOrderDao, CarDao, CarOwnerDao, RepairProjectDao, RepairMaterialDao]:
-            result_dict["message"] = repr(self.message)
-        else:
+
+        if type(self.message) in [RepairOrderDao, CarDao, CarOwnerDao, RepairProjectDao, RepairMaterialDao, PageItem]:
+            # or isinstance(self.message, PageItem): if not inherit object in python 2
             result_dict["message"] = self.message.serialize
+        else:
+            result_dict["message"] = repr(self.message)
+
         return jsonify(result_dict)
 
 

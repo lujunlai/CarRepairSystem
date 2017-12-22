@@ -1,0 +1,1 @@
+2017-12-22 16:59:04,342 - CarRepairSystem - INFO - Called method select; execution time 0.01 seconds; result {"status": "True", "message": "{'total': 2, 'list': [<Car 1>, <Car 2>]}"}.

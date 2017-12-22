@@ -30,16 +30,16 @@ class RepairOrderDao(db.Model):
     __tablename__ = 'repair_order'
 
     id = db.Column(db.Integer, primary_key=True)
-    car_collector_name = db.Column(db.String(80))
-    dispatcher_name = db.Column(db.String(80))
-    repairman_name = db.Column(db.String(80))
-    inspector_name = db.Column(db.String(80))
-    car_id = db.Column(db.Integer)
-    repair_money_total = db.Column(db.Float)
-    repair_order_status = db.Column(db.Boolean)
-    create_time = db.Column(db.DateTime)
-    update_time = db.Column(db.DateTime)
-    is_delete = db.Column(db.Boolean)
+    car_collector_name = db.Column(db.String(80), nullable=False)
+    dispatcher_name = db.Column(db.String(80), nullable=False)
+    repairman_name = db.Column(db.String(80), nullable=False)
+    inspector_name = db.Column(db.String(80), nullable=False)
+    car_id = db.Column(db.Integer, nullable=False)
+    repair_money_total = db.Column(db.Float, nullable=False)
+    repair_order_status = db.Column(db.Boolean, nullable=False)
+    create_time = db.Column(db.DateTime, nullable=False)
+    update_time = db.Column(db.DateTime, nullable=False)
+    is_delete = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, car_collector_name, dispatcher_name, car_id, repair_money_total, repairman_name,
                  inspector_name, create_time, update_time):
@@ -96,7 +96,8 @@ class RepairOrderDao(db.Model):
     # 查询记录
     @staticmethod
     def select(start, page_size):
-        return RepairOrderDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all()
+        return PageItem(RepairOrderDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all(),
+                        RepairOrderDao.query.filter_by(is_delete=False).count())
 
     # 通过repair_order_id查询
     @staticmethod
@@ -128,11 +129,11 @@ class CarOwnerDao(db.Model):
     __tablename__ = 'car_owner'
 
     id = db.Column(db.Integer, primary_key=True)
-    car_owner_name = db.Column(db.String(80))
-    car_owner_number = db.Column(db.String(80), unique=True)
-    create_time = db.Column(db.DateTime)
-    update_time = db.Column(db.DateTime)
-    is_delete = db.Column(db.Boolean)
+    car_owner_name = db.Column(db.String(80), nullable=False)
+    car_owner_number = db.Column(db.String(80), unique=True, nullable=False)
+    create_time = db.Column(db.DateTime, nullable=False)
+    update_time = db.Column(db.DateTime, nullable=False)
+    is_delete = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, car_owner_name, car_owner_number, create_time, update_time):
         self.car_owner_name = car_owner_name
@@ -172,7 +173,8 @@ class CarOwnerDao(db.Model):
     # 查询记录
     @staticmethod
     def select(start, page_size):
-        return CarOwnerDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all()
+        return PageItem(CarOwnerDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all(),
+                        CarOwnerDao.query.filter_by(is_delete=False).count())
 
     # 通过car_owner_id查询
     @staticmethod
@@ -204,12 +206,12 @@ class CarDao(db.Model):
     __tablename__ = 'car'
 
     id = db.Column(db.Integer, primary_key=True)
-    car_owner_id = db.Column(db.Integer)
-    car_brand = db.Column(db.String(80))
-    plate_number = db.Column(db.String(80), unique=True)
-    create_time = db.Column(db.DateTime)
-    update_time = db.Column(db.DateTime)
-    is_delete = db.Column(db.Boolean)
+    car_owner_id = db.Column(db.Integer, nullable=False)
+    car_brand = db.Column(db.String(80), nullable=False)
+    plate_number = db.Column(db.String(80), unique=True, nullable=False)
+    create_time = db.Column(db.DateTime, nullable=False)
+    update_time = db.Column(db.DateTime, nullable=False)
+    is_delete = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, car_owner_id, car_brand, plate_number, create_time, update_time):
         self.car_owner_id = car_owner_id
@@ -260,8 +262,8 @@ class CarDao(db.Model):
     # 查询记录
     @staticmethod
     def select(start, page_size):
-        return CarDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all()
-
+        return PageItem(CarDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all(),
+                        CarDao.query.filter_by(is_delete=False).count())
     # 通过car_id查询
     @staticmethod
     def select_by_id(car_id):
@@ -275,7 +277,9 @@ class CarDao(db.Model):
     # 通过car_owner_id查询
     @staticmethod
     def select_by_car_owner_id(car_owner_id, start, page_size):
-        return CarDao.query.filter_by(car_owner_id=car_owner_id, is_delete=False).offset(start).limit(page_size).all()
+        return PageItem(CarDao.query.filter_by(car_owner_id=car_owner_id, is_delete=False).offset(start)
+                        .limit(page_size).all(),
+                        CarDao.query.filter_by(car_owner_id=car_owner_id, is_delete=False).count())
 
     def __repr__(self):
         return '<Car %r>' % self.id
@@ -298,14 +302,14 @@ class RepairProjectDao(db.Model):
     __tablename__ = 'repair_project'
 
     id = db.Column(db.Integer, primary_key=True)
-    repair_project_name = db.Column(db.String(80))
-    repair_material_id = db.Column(db.Integer)
-    repair_order_id = db.Column(db.Integer)
-    repair_material_cost_amount = db.Column(db.Integer)
-    repair_material_status = db.Column(db.Boolean)
-    create_time = db.Column(db.DateTime)
-    update_time = db.Column(db.DateTime)
-    is_delete = db.Column(db.Boolean)
+    repair_project_name = db.Column(db.String(80), nullable=False)
+    repair_material_id = db.Column(db.Integer, nullable=False)
+    repair_order_id = db.Column(db.Integer, nullable=False)
+    repair_material_cost_amount = db.Column(db.Integer, nullable=False)
+    repair_material_status = db.Column(db.Boolean, nullable=False)
+    create_time = db.Column(db.DateTime, nullable=False)
+    update_time = db.Column(db.DateTime, nullable=False)
+    is_delete = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, repair_project_name, repair_material_id, repair_order_id, repair_material_cost_amount,
                  create_time, update_time):
@@ -364,7 +368,8 @@ class RepairProjectDao(db.Model):
     # 查询记录
     @staticmethod
     def select(start, page_size):
-        return RepairProjectDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all()
+        return PageItem(RepairProjectDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all(),
+                        RepairProjectDao.query.filter_by(is_delete=False).count())
 
     # 通过repair_project_id查询
     @staticmethod
@@ -374,8 +379,9 @@ class RepairProjectDao(db.Model):
     # 通过repair_order_id查询
     @staticmethod
     def select_by_repair_order_id(repair_order_id, start, page_size):
-        return RepairProjectDao.query.filter_by(repair_order_id=repair_order_id, is_delete=False).offset(start).limit(
-            page_size).all()
+        return PageItem(RepairProjectDao.query.filter_by(repair_order_id=repair_order_id, is_delete=False)
+                        .offset(start).limit(page_size).all(),
+                        RepairProjectDao.query.filter_by(repair_order_id=repair_order_id, is_delete=False).count())
 
     def __repr__(self):
         return '<RepairProject %r>' % self.id
@@ -384,13 +390,11 @@ class RepairProjectDao(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "car_collector_name": self.car_collector_name,
-            "dispatcher_name": self.dispatcher_name,
-            "repairman_name": self.repairman_name,
-            "inspector_name": self.inspector_name,
-            "car_id": self.car_id,
-            "repair_money_total": self.repair_money_total,
-            "repair_order_status": self.repair_order_status,
+            "repair_project_name": self.repair_project_name,
+            "repair_material_id": self.repair_material_id,
+            "repair_order_id": self.repair_order_id,
+            "repair_material_cost_amount": self.repair_material_cost_amount,
+            "repair_material_status": self.repair_material_status,
             "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             "update_time": self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
         }
@@ -402,11 +406,11 @@ class RepairMaterialDao(db.Model):
     __tablename__ = 'repair_material'
 
     id = db.Column(db.Integer, primary_key=True)
-    repair_material_name = db.Column(db.String(80), unique=True)
-    repair_material_has_amount = db.Column(db.Integer, CheckConstraint('repair_material_has_amount>0'))
-    create_time = db.Column(db.DateTime)
-    update_time = db.Column(db.DateTime)
-    is_delete = db.Column(db.Boolean)
+    repair_material_name = db.Column(db.String(80), unique=True, nullable=False)
+    repair_material_has_amount = db.Column(db.Integer, CheckConstraint('repair_material_has_amount>0'), nullable=False)
+    create_time = db.Column(db.DateTime, nullable=False)
+    update_time = db.Column(db.DateTime, nullable=False)
+    is_delete = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, repair_material_name, repair_material_has_amount, create_time, update_time):
         self.repair_material_name = repair_material_name
@@ -452,7 +456,8 @@ class RepairMaterialDao(db.Model):
     # 查询记录
     @staticmethod
     def select(start, page_size):
-        return RepairMaterialDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all()
+        return PageItem(RepairMaterialDao.query.filter_by(is_delete=False).offset(start).limit(page_size).all(),
+                        RepairMaterialDao.query.filter_by(is_delete=False).count())
 
     # 通过repair_material_id查询
     @staticmethod
@@ -471,6 +476,27 @@ class RepairMaterialDao(db.Model):
             "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             "update_time": self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
         }
+
+
+class PageItem(object):
+
+    def __init__(self, item_list, total):
+        self.item_list = item_list
+        self.total = total
+
+    @property
+    def serialize(self):
+        item_list = list()
+        for item in self.item_list:
+            item_list.append(item.serialize)
+
+        return {
+            "list": item_list,
+            "total": self.total
+        }
+
+    def __repr__(self):
+        return repr({"list":self.item_list, "total": self.total})
 
 
 db.create_all()
