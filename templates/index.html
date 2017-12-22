@@ -5,8 +5,19 @@
     <title>CarRepairSytem</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+	<link href="css/toastr/toastr.min.css" rel="stylesheet">
 </head>
 <body>
     <img src="pic/car.jpg">
 </body>
+<!--jquery-->
+<script src="js/jquery/jquery.min.js"></script>
+<!--toastr-->
+<script src="js/toastr/toastr.min.js"></script>
+
+<script>
+    toastr.options.closeButton = true;
+    toastr.options.timeOut = 1000;
+    toastr.info('您好，亲爱的管理员');
+</script>
 </html>
