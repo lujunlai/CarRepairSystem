@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>汽车维修系统</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+	<link href="css/toastr.min.css" rel="stylesheet"/>
+	<link href="css/style.css" media="screen" type="text/css" rel="stylesheet"/>
+	<link href="css/table.css" rel="stylesheet"/>
+	<link href="css/jquery.fancybox.min.css" rel="stylesheet"/>
+	<link href="css/form.css" rel="stylesheet"/>
+</head>
+<body>
+	<div id="box_div"></div>
+	<h1 align="center">车主信息管理</h1>
+    <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
+	<div id="table_div" class="container xlarge">
+	</div>
+	<div class="container xlarge">
+	<div id="page_div" class="pagination">
+	</div>
+	</div>
+	<footer align="center">@2017 copy right LU</footer>
+</body>
+<script>
+	var car_owner_id = {{car_owner_dict.car_owner_id}};
+</script>
+<!--jquery-->
+<script src="js/jquery.min.js"></script>
+<!--utils-->
+<script src="js/utils.js"></script>
+<!--toastr-->
+<script src="js/toastr.min.js"></script>
+<!--fancybox-->
+<script src="js/jquery.fancybox.min.js"></script>
+<!--data-->
+<script src="js/data.js"></script>
+<!--repair_order-->
+<script src="js/car_owner.js"></script>
+</html>

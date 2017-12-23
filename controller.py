@@ -153,14 +153,14 @@ class MaterialController:
     @staticmethod
     @app.route('/material/delete', methods=['GET'])
     def material_delete():
-        repair_material_id = request.args.get('repair_material_id')
-        return MaterialService.delete(repair_material_id).serialize
+        material_id = request.args.get('material_id')
+        return MaterialService.delete(material_id).serialize
 
     @staticmethod
     @app.route('/material/selectById', methods=['GET'])
     def material_select_by_id():
-        repair_material_id = request.args.get('repair_material_id')
-        return MaterialService.select_by_id(repair_material_id).serialize
+        material_id = request.args.get('material_id')
+        return MaterialService.select_by_id(material_id).serialize
 
 
 class CarController:
