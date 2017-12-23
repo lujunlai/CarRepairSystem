@@ -9,7 +9,7 @@ logger.setLevel(logging.INFO)
 
 # create a file handler
 
-handler = logging.FileHandler('CarRepairSystem.log')
+handler = logging.FileHandler('CarRepairSystem.txt')
 handler.setLevel(logging.INFO)
 
 # create a logging format
