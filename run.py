@@ -37,8 +37,10 @@ def car():
 
 @app.route('/repairProject')
 def repair_project():
-    repair_order_id = request.args.get('repair_order_id')
-    return render_template('repair_project.html', repair_order_id=repair_order_id)
+    repair_project_dict = dict()
+    repair_project_dict['repair_order_id'] = request.args.get('repair_order_id') \
+        if request.args.get('repair_order_id') is not None else -1
+    return render_template('repair_project.html', repair_project_dict=repair_project_dict)
 
 
 @app.route('/material')

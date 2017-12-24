@@ -20,19 +20,16 @@ class RepairProjectService:
     @logged
     def insert(insert_dict):
         insert_time = datetime.now()
-        start = insert_dict.get('start')
-        page_size = insert_dict.get('page_size')
         repair_order_id = insert_dict.get('repair_order_id')
-        repair_project_dicts = insert_dict.get('repair_project_dicts')
-        for repair_project_dict in repair_project_dicts:
-            repair_project_name = repair_project_dict.get('repair_project_name')
-            repair_material_id = repair_project_dict.get('repair_material_id')
-            repair_material_cost_amount = repair_project_dict.get('repair_material_cost_amount')
-            temp_repair_project = RepairProjectDao(repair_project_name, repair_material_id, repair_order_id,
-                                                   repair_material_cost_amount, insert_time, insert_time)
-            temp_repair_project.insert()
+        repair_project_name = insert_dict.get('repair_project_name')
+        repair_material_id = insert_dict.get('repair_material_id')
+        repair_material_cost_amount = insert_dict.get('repair_material_cost_amount')
 
-        return db_commit(RepairProjectDao.select_by_repair_order_id(repair_order_id, start, page_size))
+        new_repair_project = RepairProjectDao(repair_project_name, repair_material_id, repair_order_id,
+                                              repair_material_cost_amount, insert_time, insert_time)
+        new_repair_project.insert()
+        RepairOrderDao.update(repair_order_id, None, None, None, None, None, None, None, None, insert_time)
+        return db_commit(new_repair_project)
 
     # 输入：项目id列表 List<Int>
     # 输出：
@@ -45,25 +42,24 @@ class RepairProjectService:
         return db_commit(None)
 
     # 输入：项目信息 Dict
-    # 输出：项目列表 List<RepairProjectDao>
+    # 输出：项目 RepairProjectDao
     # 功能：项目信息更新数据库 包括RepairProject表
     @staticmethod
     @logged
     def update(update_dict):
         update_time = datetime.now()
-        repair_order_id = update_dict.get('repair_order_id')
-        start = update_dict.get('start')
-        page_size = update_dict.get('page_size')
-        repair_project_dicts = update_dict.get('repair_project_dicts')
-        for repair_project_dict in repair_project_dicts:
-            repair_project_id = repair_project_dict.get('repair_project_id')
-            repair_project_name = repair_project_dict.get('repair_project_name')
-            repair_material_id = repair_project_dict.get('repair_material_id')
-            repair_material_cost_amount = repair_project_dict.get('repair_material_cost_amount')
-            RepairProjectDao.update(repair_project_id, repair_project_name, repair_material_id, None,
-                                    repair_material_cost_amount, None, None, update_time)
+        repair_project_id = update_dict.get('repair_project_id')
+        repair_project_name = update_dict.get('repair_project_name')
+        repair_material_id = update_dict.get('repair_material_id')
+        repair_material_cost_amount = update_dict.get('repair_material_cost_amount')
 
-        return db_commit(RepairProjectDao.select_by_repair_order_id(repair_order_id, start, page_size))
+        RepairProjectDao.update(repair_project_id, repair_project_name, repair_material_id, None,
+                                repair_material_cost_amount, None, None, update_time)
+
+        update_repair_project = RepairProjectDao.select_by_id(repair_project_id)
+        RepairOrderDao.update(update_repair_project.repair_order_id, None, None, None, None, None, None, None, None,
+                              update_time)
+        return db_commit(update_repair_project)
 
     # 输入：repair_order_id and start and page_size
     # 输出：查询维修项目 List<RepairProjectDao>
@@ -223,6 +219,14 @@ class MaterialService:
     def select_by_id(repair_material_id):
         return db_select(RepairMaterialDao.select_by_id(repair_material_id))
 
+    # 输入：材料名称 String
+    # 输出：材料对象 RepairMaterialDao
+    # 功能：根据材料名称查询材料
+    @staticmethod
+    @logged
+    def select_by_name(repair_material_name):
+        return db_select(RepairMaterialDao.select_by_name(repair_material_name))
+
     # 输入：订单id Int
     # 输出：订单对象 RepairOrderDao
     # 功能：订单材料出库更新数据库 包括repair_project表和repair_material表
@@ -248,23 +252,19 @@ class CarService:
         pass
 
     # 输入：车辆信息 Dict
-    # 输出：车辆对象列表 List<CarDao>
+    # 输出：车辆对象 CarDao
     # 功能：车辆信息插入数据库 包括car表
     @staticmethod
     @logged
     def insert(insert_dict):
         insert_time = datetime.now()
         car_owner_id = insert_dict.get('car_owner_id')
-        start = insert_dict.get('start')
-        page_size = insert_dict.get('page_size')
-        car_dicts = insert_dict.get('car_dicts')
-        for car_dict in car_dicts:
-            car_brand = car_dict.get('car_brand')
-            plate_number = car_dict.get('plate_number')
-            temp_car = CarDao(car_owner_id, car_brand, plate_number, insert_time, insert_time)
-            temp_car.insert()
-
-        return db_commit(CarDao.select_by_car_owner_id(car_owner_id, start, page_size))
+        car_brand = insert_dict.get('car_brand')
+        plate_number = insert_dict.get('plate_number')
+        new_car = CarDao(car_owner_id, car_brand, plate_number, insert_time, insert_time)
+        new_car.insert()
+        CarOwnerDao.update(car_owner_id, None, None, None, insert_time)
+        return db_commit(new_car)
 
     # 输入：车辆id列表 List<Int>
     # 输出：
@@ -277,23 +277,19 @@ class CarService:
         return db_commit(None)
 
     # 输入：车辆信息 Dict
-    # 输出：车辆对象列表 List<CarDao>
+    # 输出：车辆对象 CarDao
     # 功能：车辆信息插入数据库 包括car表
     @staticmethod
     @logged
     def update(update_dict):
         update_time = datetime.now()
-        car_owner_id = update_dict.get('car_owner_id')
-        start = update_dict.get('start')
-        page_size = update_dict.get('page_size')
-        car_dicts = update_dict.get('car_dicts')
-        for car_dict in car_dicts:
-            car_id = car_dict.get('car_id')
-            car_brand = car_dict.get('car_brand')
-            plate_number = car_dict.get('plate_number')
-            CarDao.update(car_id, None, car_brand, plate_number, None, update_time)
-
-        return db_commit(CarDao.select_by_car_owner_id(car_owner_id, start, page_size))
+        plate_number = update_dict.get('plate_number')
+        car_id = update_dict.get('car_id')
+        car_brand = update_dict.get('car_brand')
+        CarDao.update(car_id, None, car_brand, plate_number, None, update_time)
+        update_car = CarDao.select_by_id(car_id)
+        CarOwnerDao.update(update_car.car_owner_id, None, None, None, update_time)
+        return db_commit(update_car)
 
     # 输入：car_owner_id and start and page_size
     # 输出：车辆信息列表 List<CarDao>

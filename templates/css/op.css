@@ -1,0 +1,23 @@
+.side-bar {width: 66px;position: fixed;bottom: 20px;right: 25px;font-size: 0;line-height: 0;z-index: 100;}
+.side-bar span {width: 40px;height: 40px;display: inline-block;background-color: #ddd;margin-bottom: 2px;}
+.side-bar span:hover {background-color: #669fdd;}
+
+span{height:40px; width:40px; display:block; position:relative;} 
+
+.insert{border-radius:50px;-webkit-border-radius:50px;-moz-border-radius:50px; background:#333;}
+.insert:before, .insert:after{content:''; height:6px; width:28px; display:block; background:#fff; border-radius:10px;-webkit-border-radius:10px;-moz-border-radius:10px; position:absolute; top:17px; left:6px;}
+.insert:after{height:28px; width:6px; top:6px; left:17px;}
+
+.delete{border-radius:50px;-webkit-border-radius:50px;-moz-border-radius:50px; background:#333;}
+.delete:before{content:''; height:6px; width:28px; display:block; background:#fff; position:absolute; top:17px; left:6px; border-radius:10px;-webkit-border-radius:10px;-moz-border-radius:10px;}
+
+.redo{border-radius:50px;-webkit-border-radius:50px;-moz-border-radius:50px; background:#333;}
+.redo:before, .redo:after{content:''; height:6px; width:28px; display:block; background:#fff; border-radius:10px;-webkit-border-radius:10px;-moz-border-radius:10px; position:absolute; top:17px; left:6px; transform:rotate(-45deg);-webkit-transform:rotate(-45deg);-moz-transform:rotate(-45deg);-o-transform:rotate(-45deg);-ms-transform:rotate(-45deg);}
+.redo:after{transform:rotate(45deg);-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);-ms-transform:rotate(45deg);}
+
+.save{border-radius:50px;-webkit-border-radius:50px;-moz-border-radius:50px; background:#333;}
+.save:after, .save:before{content:''; height:28px; width:6px; display:block; background:#fff; position:absolute; top:6px; left:20px; border-radius:10px;-webkit-border-radius:10px;-moz-border-radius:10px; transform:rotate(45deg);-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);-ms-transform:rotate(45deg);}
+.save:before{height:12px; transform:rotate(-45deg);-webkit-transform:rotate(-45deg);-moz-transform:rotate(-45deg);-o-transform:rotate(-45deg);-ms-transform:rotate(-45deg); top:18px; left:8px;}
+
+.home{height:30px; width:30px; border:5px #333 solid; border-radius:100%;-webkit-border-radius:100%;-moz-border-radius:100%;}
+.home:before{content:''; height:20px; width:20px; background:#333; border-radius:100%;-webkit-border-radius:100%;-moz-border-radius:100%; position:absolute; top:5px; left:5px;}

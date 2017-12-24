@@ -471,6 +471,11 @@ class RepairMaterialDao(db.Model):
     def select_by_id(repair_material_id):
         return RepairMaterialDao.query.filter_by(id=repair_material_id, is_delete=False).first()
 
+    # 通过repair_material_name查询
+    @staticmethod
+    def select_by_name(repair_material_name):
+        return RepairMaterialDao.query.filter_by(repair_material_name=repair_material_name, is_delete=False).first()
+
     def __repr__(self):
         return '<RepairMaterial %r>' % self.id
 

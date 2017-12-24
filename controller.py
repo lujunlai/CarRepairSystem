@@ -14,13 +14,11 @@ class RepairProjectController:
     @app.route('/repairProject/insert', methods=['POST'])
     def repair_project_insert():
         insert_dict = dict()
-        insert_dict['start'] = request.form.get('start')
-        insert_dict['page_size'] = request.form.get('page_size')
         insert_dict['repair_order_id'] = request.form.get('repair_order_id')
-        insert_dict['repair_project_dicts'] = json.loads(request.form.get('repair_project_dicts'))  # List
-        # repair_project_name = repair_project_dict.get('repair_project_name')
-        # repair_material_id = repair_project_dict.get('repair_material_id')
-        # repair_material_cost_amount = repair_project_dict.get('repair_material_cost_amount')
+        insert_dict['repair_project_name'] = request.form.get('repair_project_name')
+        insert_dict['repair_material_id'] = request.form.get('repair_material_id')
+        insert_dict['repair_material_cost_amount'] = request.form.get('repair_material_cost_amount')
+
         return RepairProjectService.insert(insert_dict).serialize
 
     @staticmethod
@@ -33,14 +31,11 @@ class RepairProjectController:
     @app.route('/repairProject/update', methods=['POST'])
     def repair_project_update():
         update_dict = dict()
-        update_dict['start'] = request.form.get('start')
-        update_dict['page_size'] = request.form.get('page_size')
-        update_dict['repair_order_id'] = request.form.get('repair_order_id')
-        update_dict['repair_project_dicts'] = json.loads(request.form.get('repair_project_dicts'))  # List
-        # repair_project_id = repair_project_dict.get('repair_project_id')
-        # repair_project_name = repair_project_dict.get('repair_project_name')
-        # repair_material_id = repair_project_dict.get('repair_material_id')
-        # repair_material_cost_amount = repair_project_dict.get('repair_material_cost_amount')
+        update_dict['repair_material_cost_amount'] = request.form.get('repair_material_cost_amount')
+        update_dict['repair_material_id'] = request.form.get('repair_material_id')
+        update_dict['repair_project_id'] = request.form.get('repair_project_id')
+        update_dict['repair_project_name'] = request.form.get('repair_project_name')
+
         return RepairProjectService.update(update_dict).serialize
 
     @staticmethod
@@ -162,6 +157,12 @@ class MaterialController:
         material_id = request.args.get('material_id')
         return MaterialService.select_by_id(material_id).serialize
 
+    @staticmethod
+    @app.route('/material/selectByName', methods=['GET'])
+    def material_select_by_name():
+        repair_material_name = request.args.get('repair_material_name')
+        return MaterialService.select_by_name(repair_material_name).serialize
+
 
 class CarController:
 
@@ -172,12 +173,10 @@ class CarController:
     @app.route('/car/insert', methods=['POST'])
     def car_insert():
         insert_dict = dict()
-        insert_dict['start'] = request.form.get('start')
-        insert_dict['page_size'] = request.form.get('page_size')
+        insert_dict['car_brand'] = request.form.get('car_brand')
+        insert_dict['plate_number'] = request.form.get('plate_number')
         insert_dict['car_owner_id'] = request.form.get('car_owner_id')
-        insert_dict['car_dicts'] = json.loads(request.form.get('car_dicts'))  # List
-        # car_brand = car_dict.get('car_brand')
-        # plate_number = car_dict.get('plate_number')
+
         return CarService.insert(insert_dict).serialize
 
     @staticmethod
@@ -190,13 +189,9 @@ class CarController:
     @app.route('/car/update', methods=['POST'])
     def car_update():
         update_dict = dict()
-        update_dict['start'] = request.form.get('start')
-        update_dict['page_size'] = request.form.get('page_size')
-        update_dict['car_owner_id'] = request.form.get('car_owner_id')
-        update_dict['car_dicts'] = json.loads(request.form.get('car_dicts'))  # List
-        # car_id = car_dict.get('car_id')
-        # car_brand = car_dict.get('car_brand')
-        # plate_number = car_dict.get('plate_number')
+        update_dict['plate_number'] = request.form.get('plate_number')
+        update_dict['car_id'] = request.form.get('car_id')
+        update_dict['car_brand'] = json.loads(request.form.get('car_brand'))
         return CarService.update(update_dict).serialize
 
     @staticmethod

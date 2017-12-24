@@ -9,6 +9,7 @@ body {
 }
 
 .container {
+  font-family: KaiTi;
   background: #fdfdfd;
   padding: 1rem;
   margin: 3rem auto;

@@ -1,6 +1,7 @@
 toastr.options.closeButton = true;
 toastr.options.timeOut = 1000;
 toastr.info('您好！');
+var only_box = null;
 
 var page_item = "<li onclick='select({0}, page_size)'><a></a></li>";
 var select_page_item = "<li class='active'><a></a></li>";
@@ -67,11 +68,29 @@ function my_box(url){
 	$("#box_div").append('<a data-fancybox data-type="iframe" id="my_box" style="display:none;"><h id="click"></h></a>')
 	$("#my_box").attr('data-src', url);
 	$("#my_box").fancybox({
+		//afterClose:function(){ready();},
 		iframe : {
-			preload : false
+			
+			preload : false,
+			css:{
+				width:'100%',
+				height:'100%'
+			}
 		}
 	}
 	);
 	$("#click").click();
 	$("#my_box").remove();
+}
+
+function fancy_box(content){
+	only_box_close();
+	only_box = $.fancybox.open(content);
+}
+
+function only_box_close(){
+	if (only_box != null){
+		only_box.close();
+		only_box = null;
+	}
 }

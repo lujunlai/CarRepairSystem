@@ -10,6 +10,7 @@
 	<link href="css/table.css" rel="stylesheet"/>
 	<link href="css/jquery.fancybox.min.css" rel="stylesheet"/>
 	<link href="css/form.css" rel="stylesheet"/>
+	<link href="css/op.css" rel="stylesheet"/>
 </head>
 <body>
 	<div id="box_div"></div>
@@ -21,10 +22,17 @@
 	<div id="page_div" class="pagination">
 	</div>
 	</div>
+	<div class="side-bar"> 
+		<span onclick="check()" class="insert"></span>
+		<span onclick="delete()" class="delete"></span>
+		<span onclick="redo()" class="redo"></span>
+		<span onclick="save()" class="save"></span>
+		<span onclick="home()" class="home"></span>
+	</div>
 	<footer align="center">@2017 copy right LU</footer>
 </body>
 <script>
-	var repair_order_id = {{repair_order_id}};
+	var repair_order_id = {{repair_project_dict.repair_order_id}};
 </script>
 <!--jquery-->
 <script src="js/jquery.min.js"></script>

@@ -10,16 +10,24 @@
 	<link href="css/table.css" rel="stylesheet"/>
 	<link href="css/jquery.fancybox.min.css" rel="stylesheet"/>
 	<link href="css/form.css" rel="stylesheet"/>
+	<link href="css/op.css" rel="stylesheet"/>
 </head>
 <body>
 	<div id="box_div"></div>
-	<h1 align="center">材料管理</h1>
+	<h1 align="center">车辆信息管理</h1>
     <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
 	<div id="table_div" class="container xlarge">
 	</div>
 	<div class="container xlarge">
 	<div id="page_div" class="pagination">
 	</div>
+	</div>
+	<div class="side-bar"> 
+		<span onclick="check()" class="insert"></span>
+		<span onclick="delete()" class="delete"></span>
+		<span onclick="redo()" class="redo"></span>
+		<span onclick="save()" class="save"></span>
+		<span onclick="home()" class="home"></span>
 	</div>
 	<footer align="center">@2017 copy right LU</footer>
 </body>
