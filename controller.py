@@ -2,7 +2,7 @@
 # controller 控制转发
 
 from service import app, MaterialService, CarOwnerService, RepairOrderService, CarService, RepairProjectService
-from flask import request, json
+from flask import request
 
 
 class RepairProjectController:
@@ -22,17 +22,16 @@ class RepairProjectController:
         return RepairProjectService.insert(insert_dict).serialize
 
     @staticmethod
-    @app.route('/repairProject/delete', methods=['GET'])
+    @app.route('/repairProject/delete', methods=['POST'])
     def repair_project_delete():
-        delete_list = request.args.get('delete_list')
-        return RepairProjectService.delete(json.loads(delete_list)).serialize
+        delete_list = request.form.get('delete_list')
+        return RepairProjectService.delete(delete_list).serialize
 
     @staticmethod
     @app.route('/repairProject/update', methods=['POST'])
     def repair_project_update():
         update_dict = dict()
         update_dict['repair_material_cost_amount'] = request.form.get('repair_material_cost_amount')
-        update_dict['repair_material_id'] = request.form.get('repair_material_id')
         update_dict['repair_project_id'] = request.form.get('repair_project_id')
         update_dict['repair_project_name'] = request.form.get('repair_project_name')
 
@@ -89,7 +88,6 @@ class RepairOrderController:
         update_dict['repair_order_id'] = request.form.get('repair_order_id')
         update_dict['car_collector_name'] = request.form.get('car_collector_name')
         update_dict['dispatcher_name'] = request.form.get('dispatcher_name')
-        update_dict['car_id'] = request.form.get('car_id')
         update_dict['repair_money_total'] = request.form.get('repair_money_total')
         update_dict['repairman_name'] = request.form.get('repairman_name')
         update_dict['inspector_name'] = request.form.get('inspector_name')
@@ -180,10 +178,10 @@ class CarController:
         return CarService.insert(insert_dict).serialize
 
     @staticmethod
-    @app.route('/car/delete', methods=['GET'])
+    @app.route('/car/delete', methods=['POST'])
     def car_delete():
-        delete_list = request.args.get('delete_list')
-        return CarService.delete(json.loads(delete_list)).serialize
+        delete_list = request.form.get('delete_list')
+        return CarService.delete(delete_list).serialize
 
     @staticmethod
     @app.route('/car/update', methods=['POST'])
@@ -191,7 +189,7 @@ class CarController:
         update_dict = dict()
         update_dict['plate_number'] = request.form.get('plate_number')
         update_dict['car_id'] = request.form.get('car_id')
-        update_dict['car_brand'] = json.loads(request.form.get('car_brand'))
+        update_dict['car_brand'] = request.form.get('car_brand')
         return CarService.update(update_dict).serialize
 
     @staticmethod
@@ -238,6 +236,7 @@ class CarOwnerController:
     @app.route('/carOwner/update', methods=['POST'])
     def car_owner_update():
         update_dict = dict()
+        update_dict['car_owner_id'] = request.form.get('car_owner_id')
         update_dict['car_owner_name'] = request.form.get('car_owner_name')
         update_dict['car_owner_number'] = request.form.get('car_owner_number')
         return CarOwnerService.update(update_dict).serialize

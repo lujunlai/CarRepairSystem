@@ -1,6 +1,6 @@
+jQuery.ajaxSettings.traditional = true;
 toastr.options.closeButton = true;
 toastr.options.timeOut = 1000;
-toastr.info('您好！');
 var only_box = null;
 
 var page_item = "<li onclick='select({0}, page_size)'><a></a></li>";
@@ -68,7 +68,7 @@ function my_box(url){
 	$("#box_div").append('<a data-fancybox data-type="iframe" id="my_box" style="display:none;"><h id="click"></h></a>')
 	$("#my_box").attr('data-src', url);
 	$("#my_box").fancybox({
-		//afterClose:function(){ready();},
+		afterClose:function(){ready();},
 		iframe : {
 			
 			preload : false,
@@ -93,4 +93,23 @@ function only_box_close(){
 		only_box.close();
 		only_box = null;
 	}
+}
+
+function check_input(fuc){
+	
+	var result = true;
+	$("input").each(function(){
+		if ($(this).val() == "")
+			result = false;
+	});
+
+	if(result)
+		fuc();
+	else{
+		toastr.warning("输入框不准为空！");
+	}
+}
+
+function home(){
+	this.location.href = "/";
 }

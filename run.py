@@ -59,5 +59,9 @@ def car_owner():
     return render_template('car_owner.html', car_owner_dict=car_owner_dict)
 
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)

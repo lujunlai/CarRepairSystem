@@ -21,3 +21,6 @@ span{height:40px; width:40px; display:block; position:relative;}
 
 .home{height:30px; width:30px; border:5px #333 solid; border-radius:100%;-webkit-border-radius:100%;-moz-border-radius:100%;}
 .home:before{content:''; height:20px; width:20px; background:#333; border-radius:100%;-webkit-border-radius:100%;-moz-border-radius:100%; position:absolute; top:5px; left:5px;}
+
+.search{border-radius:50px;-webkit-border-radius:50px;-moz-border-radius:50px; background:#333;}
+.search:after{content:''; height:6px; width:28px; display:block; background:#fff; border-radius:10px;-webkit-border-radius:10px;-moz-border-radius:10px; position:absolute; top:17px; left:6px; transform:rotate(-45deg);-webkit-transform:rotate(-45deg);-moz-transform:rotate(-45deg);-o-transform:rotate(-45deg);-ms-transform:rotate(-45deg);}

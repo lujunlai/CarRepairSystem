@@ -437,7 +437,8 @@ class RepairMaterialDao(db.Model):
         if repair_material_name is not None:
             update_dict['repair_material_name'] = repair_material_name
         if repair_material_has_amount is not None:
-            update_dict['repair_material_has_amount'] = repair_material_has_amount
+            update_dict['repair_material_has_amount'] = RepairMaterialDao.repair_material_has_amount + \
+                                                        repair_material_has_amount
         if create_time is not None:
             update_dict['create_time'] = create_time
         if update_time is not None:
@@ -447,9 +448,10 @@ class RepairMaterialDao(db.Model):
 
     # 修改数量
     @staticmethod
-    def update_amount(repair_material_id, change_number):
+    def update_amount(repair_material_id, change_number, update_time):
         repair_material = RepairMaterialDao.query.filter_by(id=repair_material_id).first()
         repair_material.repair_material_has_amount = repair_material.repair_material_has_amount + change_number
+        repair_material.update_time = update_time
 
     # 删除记录
     @staticmethod

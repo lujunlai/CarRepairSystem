@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>汽车维修系统</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+	<link href="css/toastr.min.css" rel="stylesheet"/>
+	<link href="css/style.css" media="screen" type="text/css" rel="stylesheet"/>
+	<link href="css/table.css" rel="stylesheet"/>
+</head>
+<body>
+	<h1 align="center">汽车维修系统</h1>
+    <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
+	<div id="table_div" class="container xlarge">
+	<table align="center">
+	<thead><tr>
+	<th>维修单信息管理</th>
+	<th>材料信息管理</th>
+	<th>车主信息管理</th>
+	</tr></thead>
+	<tr>
+	<td><a href='/repairOrder'><img src='pic/repairOrder.jpg'></a></td>
+	<td><a href='/material'><img src='pic/material.jpg'></a></td>
+	<td><a href='/carOwner'><img src='pic/carOwner.jpg'></a></td>
+	</tr>
+	</table>
+	</div>
+	<footer align="center">@2017 copy right LU</footer>
+</body>
+<!--jquery-->
+<script src="js/jquery.min.js"></script>
+<!--toastr-->
+<script src="js/toastr.min.js"></script>
+<script>
+	toastr.options.closeButton = true;
+	toastr.options.timeOut = 1000;
+	toastr.info("欢迎！");
+</script>
+</html>

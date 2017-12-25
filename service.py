@@ -50,10 +50,9 @@ class RepairProjectService:
         update_time = datetime.now()
         repair_project_id = update_dict.get('repair_project_id')
         repair_project_name = update_dict.get('repair_project_name')
-        repair_material_id = update_dict.get('repair_material_id')
         repair_material_cost_amount = update_dict.get('repair_material_cost_amount')
 
-        RepairProjectDao.update(repair_project_id, repair_project_name, repair_material_id, None,
+        RepairProjectDao.update(repair_project_id, repair_project_name, None, None,
                                 repair_material_cost_amount, None, None, update_time)
 
         update_repair_project = RepairProjectDao.select_by_id(repair_project_id)
@@ -133,12 +132,11 @@ class RepairOrderService:
         repair_order_id = update_dict.get('repair_order_id')
         car_collector_name = update_dict.get('car_collector_name')
         dispatcher_name = update_dict.get('dispatcher_name')
-        car_id = update_dict.get('car_id')
         repair_money_total = update_dict.get('repair_money_total')
         repairman_name = update_dict.get('repairman_name')
         inspector_name = update_dict.get('inspector_name')
         repair_order_status = update_dict.get('repair_order_status')
-        RepairOrderDao.update(repair_order_id, car_collector_name, dispatcher_name, car_id, repair_money_total,
+        RepairOrderDao.update(repair_order_id, car_collector_name, dispatcher_name, None, repair_money_total,
                               repairman_name, inspector_name, repair_order_status, None, update_time)
 
         return db_commit(RepairOrderDao.select_by_id(repair_order_id))
@@ -235,14 +233,14 @@ class MaterialService:
     def confirm(repair_order_id):
         update_time = datetime.now()
 
-        repair_projects = RepairProjectDao.select_by_repair_order_id(repair_order_id, 0, -1)
+        repair_projects = RepairProjectDao.select_by_repair_order_id(repair_order_id, 0, -1).item_list
 
         for repair_project in repair_projects:
             if repair_project.repair_material_status is False:
                 RepairProjectDao.update(repair_project.id, None, None, None, None, True, None, update_time)
                 RepairMaterialDao.update_amount(repair_project.repair_material_id,
-                                                -repair_project.repair_material_cost_amount)
-
+                                                -repair_project.repair_material_cost_amount, update_time)
+        RepairOrderDao.update(repair_order_id, None, None, None, None, None, None, None, None, update_time)
         return db_commit(RepairOrderDao.select_by_id(repair_order_id))
 
 

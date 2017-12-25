@@ -1,6 +1,6 @@
 var url = "http://127.0.0.1:5000/car";
 
-var table = "<table id='table_info' class='bordered'><thead><tr><th>序号</th><th>车主编号</th><th>品牌</th><th>车牌号</th><th>创建时间</th><th>更新时间</th></tr></thead></table>";
+var table = "<table id='table_info' class='bordered'><thead><tr><th>序号</th><th>车主编号</th><th>车牌号</th><th>品牌</th><th>创建时间</th><th>更新时间</th></tr></thead></table>";
 var info_tr = "<tr><td>{0}</td><td onclick='get_car_owner_info({6})'><a>{1}</a></td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>";
 
 $(document).ready(function(){
@@ -55,6 +55,26 @@ function insert(){
 	)
 }
 
+function update_by_id(){
+	$.post(
+	url + '/update',
+	{
+		car_id:$("#car_id").text(),
+		plate_number:$("#plate_number").val(),
+		car_brand:$("#car_brand").val(),
+	},
+	function(data){
+		if (data.status == false)
+			toastr.error(data.message);
+		else{
+			toastr.info('更新成功，车辆编号：' + data.message.id);
+			only_box_close();
+			ready();
+		}
+		}	
+	)
+}
+
 function select_by_id(){
 	init();
 	now_page = 0;
@@ -70,11 +90,75 @@ function select_by_id(){
 	)
 }
 
+function select_by_id_for_update(){
+	$.getJSON(
+	url + "/selectById", 
+	{
+		car_id:$("#car_id").val()
+	},
+	function(data){
+		if (data.status == false)
+			toastr.error(data.message);
+		else{
+			if(data.message == 'None')
+				toastr.warning('车辆编号不存在!');
+			else{
+				var item = data.message;
+				var check_ = '<div class="container xlarge"><table class="bordered">' + 
+							 '<thead><tr><th>车辆编号</th><th>品牌</th><th>车牌号</th><th>操作</th></tr></thead>' + 
+							 '<tr><td><a id="car_id">{0}</a></td><td><input id="car_brand" type="text" value="{1}"/></td><td><input id="plate_number" type="text" value="{2}"/></td><td><input type="button" value="确定" onclick="check_input(update_by_id)"/></td></tr>'+
+							 '</table></div>';
+	
+				check_ = check_.format(item.id, item.car_brand, item.plate_number);
+				fancy_box(check_);
+			}
+		}
+		}
+	)
+}
+
+function select_car_by_plate_number(){
+	$.getJSON(
+	url + "/selectByPlateNumber", 
+	{
+		plate_number:$("#plate_number").val()
+	},
+	function(data){
+		if (data.status == false)
+			toastr.error(data.message);
+		else{
+			if(data.message == 'None')
+				toastr.warning('车辆信息未登记!');
+			else
+				toastr.info('车辆编号：' + data.message.id);
+		}
+		}
+	)
+}
+
+function delete_by_id(){
+	$.post(
+	url + '/delete',
+	{
+		delete_list:[$("#car_id").val()]
+	},
+	function(data){
+		if (data.status == false)
+			toastr.error(data.message);
+		else{
+			toastr.info('删除成功，车辆编号：' + $("#car_id").val());
+			only_box_close();
+			ready();
+		}
+		}	
+	)
+}
+
 function check(){
 	var check_ = '<div class="container xlarge"><table class="bordered">' + 
 		'<thead><tr><th>车主编号</th><th>车牌号</th><th>品牌</th><th>操作</th></tr></thead>' + 
 		'<tr><td><a id="car_owner_id">'+ car_owner_id +
-		'</a></td><td><input id="plate_number" type="text" /></td><td><input id="car_brand" type="text" /></td><td><input type="button" value="确定" onclick="insert()"/></td></tr>'+
+		'</a></td><td><input id="plate_number" type="text" /></td><td><input id="car_brand" type="text" /></td><td><input type="button" value="确定" onclick="check_input(insert)"/></td></tr>'+
 		'</table></div>';
 	
 	fancy_box(check_);
@@ -87,3 +171,31 @@ function add_info_tr(item, start){
 function get_car_owner_info(car_owner_id){
 	my_box('http://127.0.0.1:5000/carOwner?car_owner_id=' + car_owner_id);
 }
+
+function redo(){
+	var check_ = '<div class="container xlarge"><table class="bordered">' + 
+		'<thead><tr><th>车辆编号</th><th>操作</th></tr></thead>' + 
+		'<tr><td><input id="car_id" type="number" placeholder="请输入需要删除的车辆编号"/></td><td><input type="button" value="确定" onclick="check_input(delete_by_id)"/></td></tr>'+
+		'</table></div>';
+	
+	fancy_box(check_);
+}
+
+function update(){
+	var check_ = '<div class="container xlarge"><table class="bordered">' + 
+		'<thead><tr><th>车辆编号</th><th>操作</th></tr></thead>' + 
+		'<tr><td><input id="car_id" type="number" placeholder="请输入需要更新的车辆编号"/></td><td><input type="button" value="确定" onclick="check_input(select_by_id_for_update)"/></td></tr>'+
+		'</table></div>';
+	
+	fancy_box(check_);
+}
+
+function search(){
+	var check_ = '<div class="container xlarge"><table class="bordered">' + 
+		'<thead><tr><th>车牌号</th><th>操作</th></tr></thead>' + 
+		'<tr><td><input id="plate_number" type="text" placeholder="请输入需要查询的车牌号"/></td><td><input type="button" value="确定" onclick="check_input(select_car_by_plate_number)"/></td></tr>'+
+		'</table></div>';
+	
+	fancy_box(check_);
+}
+
