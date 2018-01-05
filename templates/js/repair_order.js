@@ -162,10 +162,12 @@ function finish(){
 function check(){
 	var check_ = '<div class="container xlarge"><table class="bordered">' + 
 		'<thead><tr><th>车牌号</th><th>操作</th></tr></thead>' + 
-		'<tr><td><input id="plate_number" type="text" placeholder="请输入维修车辆的车牌号"/></td><td><input type="button" value="确定" onclick="check_input(select_car_by_plate_number)"/></td></tr>'+
+		'<tr><td><input id="plate_number" type="text" placeholder="请输入维修车辆的车牌号"/><div id="suggestions-container"></div></td><td><input type="button" value="确定" onclick="check_input(select_car_by_plate_number)"/></td></tr>'+
 		'</table></div>';
 	
 	fancy_box(check_);
+	
+	get_suggestion_plate_number();
 }
 
 function check_insert(car_id){

@@ -175,7 +175,8 @@ class MaterialService:
         repair_material_has_amount = insert_dict.get('repair_material_has_amount')
         new_material = RepairMaterialDao(repair_material_name, repair_material_has_amount, insert_time, insert_time)
         new_material.insert()
-
+        new_history = RepairMaterialHistoryDao(repair_material_name, u'初始', repair_material_has_amount, insert_time)
+        new_history.insert()
         return db_commit(new_material)
 
     # 输入：材料名称 String
@@ -199,6 +200,8 @@ class MaterialService:
         repair_material_has_amount = update_dict.get('repair_material_has_amount')
         RepairMaterialDao.update(repair_material_id, repair_material_name, repair_material_has_amount,
                                  None, update_time)
+        new_history = RepairMaterialHistoryDao(repair_material_name, u'更新', repair_material_has_amount, update_time)
+        new_history.insert()
         return db_commit(RepairMaterialDao.select_by_id(repair_material_id))
 
     # 输入：start and page_size
@@ -248,6 +251,10 @@ class MaterialService:
                 RepairProjectDao.update(repair_project.id, None, None, None, None, True, None, update_time)
                 RepairMaterialDao.update_amount(repair_project.repair_material_id,
                                                 -repair_project.repair_material_cost_amount, update_time)
+                material = RepairMaterialDao.select_by_id(repair_project.repair_material_id)
+                new_history = RepairMaterialHistoryDao(material.repair_material_name, u'订单取材',
+                                                       -repair_project.repair_material_cost_amount, update_time)
+                new_history.insert()
         RepairOrderDao.update(repair_order_id, None, None, None, None, None, None, None, None, update_time)
         return db_commit(RepairOrderDao.select_by_id(repair_order_id))
 
@@ -326,7 +333,10 @@ class CarService:
     @staticmethod
     @logged
     def query_by_plate_number(car_owner_id, plate_number):
-        return db_select(CarDao.query_by_plate_number(car_owner_id, plate_number))
+        if car_owner_id is None or car_owner_id == "":
+            return db_select(CarDao.query_by_just_plate_number(plate_number))
+        else:
+            return db_select(CarDao.query_by_plate_number(car_owner_id, plate_number))
 
 
 class CarOwnerService:
@@ -395,6 +405,20 @@ class CarOwnerService:
     @logged
     def select_by_car_owner_number(car_owner_number):
         return db_select(CarOwnerDao.select_by_car_owner_number(car_owner_number))
+
+
+class RepairMaterialHistoryService:
+
+    def __init__(self):
+        pass
+
+    # 输入：repair_material_name start and page_size
+    # 输出：材料历史记录列表 List<CarOwnerDao>
+    # 功能：查询材料历史记录
+    @staticmethod
+    @logged
+    def select(repair_material_name, start, page_size):
+        return db_select(RepairMaterialHistoryDao.select(repair_material_name, start, page_size))
 
 
 class Result:

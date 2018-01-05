@@ -287,6 +287,15 @@ class CarDao(db.Model):
                         CarDao.query.filter_by(car_owner_id=car_owner_id, is_delete=False)
                         .filter(CarDao.plate_number.like(plate_number)).count())
 
+    # 通过plate_number模糊查询
+    @staticmethod
+    def query_by_just_plate_number(plate_number):
+        plate_number = '%' + plate_number + '%'
+        return PageItem(CarDao.query.filter_by(is_delete=False)
+                        .filter(CarDao.plate_number.like(plate_number)).all(),
+                        CarDao.query.filter_by(is_delete=False)
+                        .filter(CarDao.plate_number.like(plate_number)).count())
+
     # 通过car_owner_id查询
     @staticmethod
     def select_by_car_owner_id(car_owner_id, start, page_size):
@@ -507,6 +516,53 @@ class RepairMaterialDao(db.Model):
             "repair_material_has_amount": self.repair_material_has_amount,
             "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             "update_time": self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+
+# RepairMaterial class
+class RepairMaterialHistoryDao(db.Model):
+
+    __tablename__ = 'repair_material_history'
+
+    id = db.Column(db.Integer, primary_key=True)
+    repair_material_name = db.Column(db.String(80), nullable=False)
+    description = db.Column(db.String(80), nullable=False)
+    change_amount = db.Column(db.Integer, nullable=False)
+    create_time = db.Column(db.DateTime, nullable=False)
+    is_delete = db.Column(db.Boolean, nullable=False)
+
+    def __init__(self, repair_material_name, description, change_amount, create_time):
+        self.repair_material_name = repair_material_name
+        self.change_amount = change_amount
+        self.description = description
+        self.create_time = create_time
+        self.is_delete = False
+
+    # 插入记录
+    def insert(self):
+        db.session.add(self)
+        # db.session.commit()
+
+    # 查询记录
+    @staticmethod
+    def select(repair_material_name, start, page_size):
+        return PageItem(RepairMaterialHistoryDao.query.filter_by(repair_material_name=repair_material_name,
+                                                                 is_delete=False)
+                        .order_by(RepairMaterialHistoryDao.create_time.desc()).offset(start).limit(page_size).all(),
+                        RepairMaterialHistoryDao.query.filter_by(repair_material_name=repair_material_name,
+                                                                 is_delete=False).count())
+
+    def __repr__(self):
+        return '<RepairMaterialHistory %r>' % self.id
+
+    @property
+    def serialize(self):
+        return {
+            "id": self.id,
+            "repair_material_name": self.repair_material_name,
+            "description": self.description,
+            "change_amount": self.change_amount,
+            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S")
         }
 
 

@@ -14,7 +14,7 @@
 </head>
 <body>
 	<div id="box_div"></div>
-	<h1 align="center">维修单管理</h1>
+	<h1 align="center">{{material_history_dict.repair_material_name}}</h1>
     <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
 	<div id="table_div" class="container xlarge">
 	</div>
@@ -22,15 +22,11 @@
 	<div id="page_div" class="pagination">
 	</div>
 	</div>
-	<div class="side-bar"> 
-		<span onclick="check()" class="insert"></span>
-		<span onclick="update()" class="delete"></span>
-		<span onclick="redo()" class="redo"></span>
-		<span onclick="save()" class="save"></span>
-		<span onclick="home()" class="home"></span>
-	</div>
 	<footer align="center">@2017 copy right LU</footer>
 </body>
+<script>
+	var repair_material_name = {{material_history_dict.repair_material_name|tojson}};
+</script>
 <!--jquery-->
 <script src="js/jquery.min.js"></script>
 <!--autocomplete-->
@@ -43,6 +39,6 @@
 <script src="js/jquery.fancybox.min.js"></script>
 <!--data-->
 <script src="js/data.js"></script>
-<!--repair_order-->
-<script src="js/repair_order.js"></script>
+<!--material_history-->
+<script src="js/material_history.js"></script>
 </html>

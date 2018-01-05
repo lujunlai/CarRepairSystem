@@ -1,8 +1,8 @@
 #   encoding=utf8
 # controller 控制转发
 
-from service import app, MaterialService, CarOwnerService, RepairOrderService, CarService, RepairProjectService
-from flask import request
+from service import app, MaterialService, CarOwnerService, RepairOrderService, CarService, RepairProjectService, RepairMaterialHistoryService
+from flask import request, render_template
 
 
 class RepairProjectController:
@@ -224,7 +224,7 @@ class CarController:
         car_id = request.args.get('car_id')
         car_owner_id = request.args.get('car_owner_id')
         plate_number = request.args.get('plate_number')
-        if car_id != u'-1':
+        if car_id != u'-1' and car_id != "":
             return CarService.select_by_id(car_id).serialize
         else:
             return CarService.query_by_plate_number(car_owner_id, plate_number).serialize
@@ -276,3 +276,26 @@ class CarOwnerController:
     def car_owner_select_by_car_owner_number():
         car_owner_number = request.args.get('car_owner_number')
         return CarOwnerService.select_by_car_owner_number(car_owner_number).serialize
+
+
+class RepairMaterialHistoryController:
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    @app.route('/repairMaterialHistory/select', methods=['GET'])
+    def repair_material_history_select():
+        repair_material_name = request.args.get('repair_material_name')
+        start = request.args.get('start')
+        page_size = request.args.get('page_size')
+        return RepairMaterialHistoryService.select(repair_material_name, start, page_size).serialize
+
+
+@app.route('/materialHistory')
+def material_history():
+    material_history_dict = dict()
+    material_id = request.args.get('repair_material_id') if request.args.get('repair_material_id') is not None else -1
+    repair_material_name = MaterialService.select_by_id(material_id).message.repair_material_name
+    material_history_dict["repair_material_name"] = repair_material_name
+    return render_template('material_history.html', material_history_dict=material_history_dict)

@@ -148,14 +148,14 @@ function get_suggestion_plate_number(){
 	"/car/queryByPlateNumber",
 	{
 		plate_number: query,
-		car_owner_id: car_owner_id,
-		car_id: car_id
+		car_owner_id: (typeof(car_owner_id)=='undefined')?null:car_owner_id,
+		car_id: (typeof(car_id)=='undefined')?null:car_id,
 	},
 	function(data){
 		if (data.status == false)
 			toastr.error(data.message);
 		else{
-			if (car_id == -1){
+			if (typeof(car_id)=='undefined' || car_id == -1){
 				var list = new Array();
 				for (index in data.message.list){
 					list[index] = {"value": data.message.list[index].plate_number, "data": null};
