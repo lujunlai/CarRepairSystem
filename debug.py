@@ -1,12 +1,5 @@
 from controller import app
 from flask import send_from_directory, render_template, request
-import logging
-logging.basicConfig(
-     level=logging.INFO,
-     format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s",
-     filename='request.txt',
-     filemode='w'
-     )
 
 
 @app.route('/js/<path:path>')
