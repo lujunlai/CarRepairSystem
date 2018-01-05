@@ -90,18 +90,18 @@ function select_by_id(){
 	)
 }
 
-function select_by_id_for_update(){
+function select_by_plate_number_for_update(){
 	$.getJSON(
-	url + "/selectById", 
+	url + "/selectByPlateNumber", 
 	{
-		car_id:$("#car_id").val()
+		plate_number:$("#plate_number").val()
 	},
 	function(data){
 		if (data.status == false)
 			toastr.error(data.message);
 		else{
 			if(data.message == 'None')
-				toastr.warning('车辆编号不存在!');
+				toastr.warning('车辆信息未登记!');
 			else{
 				var item = data.message;
 				var check_ = '<div class="container xlarge"><table class="bordered">' + 
@@ -136,17 +136,17 @@ function select_car_by_plate_number(){
 	)
 }
 
-function delete_by_id(){
+function delete_by_plate_number(){
 	$.post(
-	url + '/delete',
+	url + '/deleteByPlateNumber',
 	{
-		delete_list:[$("#car_id").val()]
+		plate_number:$("#plate_number").val()
 	},
 	function(data){
 		if (data.status == false)
 			toastr.error(data.message);
 		else{
-			toastr.info('删除成功，车辆编号：' + $("#car_id").val());
+			toastr.info('删除成功，车牌号：' + $("#plate_number").val());
 			only_box_close();
 			ready();
 		}
@@ -174,28 +174,34 @@ function get_car_owner_info(car_owner_id){
 
 function redo(){
 	var check_ = '<div class="container xlarge"><table class="bordered">' + 
-		'<thead><tr><th>车辆编号</th><th>操作</th></tr></thead>' + 
-		'<tr><td><input id="car_id" type="number" placeholder="请输入需要删除的车辆编号"/></td><td><input type="button" value="确定" onclick="check_input(delete_by_id)"/></td></tr>'+
+		'<thead><tr><th>车牌号</th><th>操作</th></tr></thead>' + 
+		'<tr><td><input id="plate_number" type="text" placeholder="请输入需要删除的车牌号"/><div id="suggestions-container"></div></td><td><input type="button" value="确定" onclick="check_input(delete_by_plate_number)"/></td></tr>'+
 		'</table></div>';
 	
 	fancy_box(check_);
+	
+	get_suggestion_plate_number();
 }
 
 function update(){
 	var check_ = '<div class="container xlarge"><table class="bordered">' + 
-		'<thead><tr><th>车辆编号</th><th>操作</th></tr></thead>' + 
-		'<tr><td><input id="car_id" type="number" placeholder="请输入需要更新的车辆编号"/></td><td><input type="button" value="确定" onclick="check_input(select_by_id_for_update)"/></td></tr>'+
+		'<thead><tr><th>车牌号</th><th>操作</th></tr></thead>' + 
+		'<tr><td><input id="plate_number" type="text" placeholder="请输入需要更新的车牌号"/><div id="suggestions-container"></div></td><td><input type="button" value="确定" onclick="check_input(select_by_plate_number_for_update)"/></td></tr>'+
 		'</table></div>';
 	
 	fancy_box(check_);
+	
+	get_suggestion_plate_number();
 }
 
 function search(){
 	var check_ = '<div class="container xlarge"><table class="bordered">' + 
 		'<thead><tr><th>车牌号</th><th>操作</th></tr></thead>' + 
-		'<tr><td><input id="plate_number" type="text" placeholder="请输入需要查询的车牌号"/></td><td><input type="button" value="确定" onclick="check_input(select_car_by_plate_number)"/></td></tr>'+
+		'<tr><td><input id="plate_number" type="text" placeholder="请输入需要查询的车牌号"/><div id="suggestions-container"></div></td><td><input type="button" value="确定" onclick="check_input(select_car_by_plate_number)"/></td></tr>'+
 		'</table></div>';
 	
 	fancy_box(check_);
+	
+	get_suggestion_plate_number();
 }
 

@@ -144,10 +144,10 @@ class MaterialController:
         return MaterialService.select(start, page_size).serialize
 
     @staticmethod
-    @app.route('/material/delete', methods=['GET'])
-    def material_delete():
-        material_id = request.args.get('material_id')
-        return MaterialService.delete(material_id).serialize
+    @app.route('/material/deleteByName', methods=['GET'])
+    def material_delete_by_name():
+        repair_material_name = request.args.get('repair_material_name')
+        return MaterialService.delete_by_name(repair_material_name).serialize
 
     @staticmethod
     @app.route('/material/selectById', methods=['GET'])
@@ -160,6 +160,12 @@ class MaterialController:
     def material_select_by_name():
         repair_material_name = request.args.get('repair_material_name')
         return MaterialService.select_by_name(repair_material_name).serialize
+
+    @staticmethod
+    @app.route('/material/queryByName', methods=['GET'])
+    def material_query_by_name():
+        repair_material_name = request.args.get('repair_material_name')
+        return MaterialService.query_by_name(repair_material_name).serialize
 
 
 class CarController:
@@ -178,10 +184,10 @@ class CarController:
         return CarService.insert(insert_dict).serialize
 
     @staticmethod
-    @app.route('/car/delete', methods=['POST'])
+    @app.route('/car/deleteByPlateNumber', methods=['POST'])
     def car_delete():
-        delete_list = request.form.get('delete_list')
-        return CarService.delete(delete_list).serialize
+        plate_number = request.form.get('plate_number')
+        return CarService.delete_by_plate_number(plate_number).serialize
 
     @staticmethod
     @app.route('/car/update', methods=['POST'])
@@ -211,6 +217,17 @@ class CarController:
     def select_by_plate_number():
         plate_number = request.args.get('plate_number')
         return CarService.select_by_plate_number(plate_number).serialize
+
+    @staticmethod
+    @app.route('/car/queryByPlateNumber', methods=['GET'])
+    def query_by_plate_number():
+        car_id = request.args.get('car_id')
+        car_owner_id = request.args.get('car_owner_id')
+        plate_number = request.args.get('plate_number')
+        if car_id != u'-1':
+            return CarService.select_by_id(car_id).serialize
+        else:
+            return CarService.query_by_plate_number(car_owner_id, plate_number).serialize
 
 
 class CarOwnerController:

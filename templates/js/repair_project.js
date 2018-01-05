@@ -141,10 +141,12 @@ function delete_by_id(){
 function check(){
 	var check_ = '<div class="container xlarge"><table class="bordered">' + 
 		'<thead><tr><th>材料名称</th><th>操作</th></tr></thead>' + 
-		'<tr><td><input id="repair_material_name" type="text" placeholder="请输入需要使用的材料"/></td><td><input type="button" value="确定" onclick="check_input(select_by_name)"/></td></tr>'+
+		'<tr><td><input id="repair_material_name" type="text" placeholder="请输入需要使用的材料名称"/><div id="suggestions-container"></div></td><td><input type="button" value="确定" onclick="check_input(select_by_name)"/></td></tr>'+
 		'</table></div>';
 	
 	fancy_box(check_);
+	
+	get_suggestion_repair_material_name();
 }
 
 function check_insert(repair_material_id){

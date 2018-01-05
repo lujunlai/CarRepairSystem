@@ -178,13 +178,13 @@ class MaterialService:
 
         return db_commit(new_material)
 
-    # 输入：材料id Int
+    # 输入：材料名称 String
     # 输出：
     # 功能：删除材料信息 包括repair_material表
     @staticmethod
     @logged
-    def delete(repair_material_id):
-        RepairMaterialDao.delete(repair_material_id)
+    def delete_by_name(repair_material_name):
+        RepairMaterialDao.delete(repair_material_name)
         return db_commit(None)
 
     # 输入：材料信息 Dict
@@ -225,6 +225,14 @@ class MaterialService:
     def select_by_name(repair_material_name):
         return db_select(RepairMaterialDao.select_by_name(repair_material_name))
 
+    # 输入：材料名称 String
+    # 输出：材料对象 RepairMaterialDao
+    # 功能：根据材料名称模糊查询材料
+    @staticmethod
+    @logged
+    def query_by_name(repair_material_name):
+        return db_select(RepairMaterialDao.query_by_name(repair_material_name))
+
     # 输入：订单id Int
     # 输出：订单对象 RepairOrderDao
     # 功能：订单材料出库更新数据库 包括repair_project表和repair_material表
@@ -264,14 +272,13 @@ class CarService:
         CarOwnerDao.update(car_owner_id, None, None, None, insert_time)
         return db_commit(new_car)
 
-    # 输入：车辆id列表 List<Int>
+    # 输入：车牌号plate_number String
     # 输出：
-    # 功能：批量删除车辆信息 包括car表
+    # 功能：删除车辆信息 包括car表
     @staticmethod
     @logged
-    def delete(delete_list):
-        for car_id in delete_list:
-            CarDao.delete(car_id)
+    def delete_by_plate_number(plate_number):
+        CarDao.delete(plate_number)
         return db_commit(None)
 
     # 输入：车辆信息 Dict
@@ -312,6 +319,14 @@ class CarService:
     @logged
     def select_by_plate_number(plate_number):
         return db_select(CarDao.select_by_plate_number(plate_number))
+
+    # 输入：车主id Int 车辆plate_number String
+    # 输出：车辆对象 CarDao
+    # 功能：通过car_owner_id, plate_number模糊查询车辆
+    @staticmethod
+    @logged
+    def query_by_plate_number(car_owner_id, plate_number):
+        return db_select(CarDao.query_by_plate_number(car_owner_id, plate_number))
 
 
 class CarOwnerService:

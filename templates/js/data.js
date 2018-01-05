@@ -113,3 +113,70 @@ function check_input(fuc){
 function home(){
 	this.location.href = "/";
 }
+
+function get_suggestion_repair_material_name(){
+	$('#repair_material_name').autocomplete({
+    lookup: function (query, done) {
+	$.getJSON(
+	"/material/queryByName?repair_material_name=" + query,
+	function(data){
+		if (data.status == false)
+			toastr.error(data.message);
+		else{
+			var list = new Array();
+			for (index in data.message.list){
+				list[index] = {"value": data.message.list[index].repair_material_name, "data": null};
+			}
+			var result = {
+				suggestions: list
+			};
+			done(result);
+		}
+		}
+	)
+    },
+	showNoSuggestionNotice: true,
+	noSuggestionNotice: '库中没有此材料',
+	appendTo: '#suggestions-container',
+	});
+}
+
+function get_suggestion_plate_number(){
+	$('#plate_number').autocomplete({
+    lookup: function (query, done) {
+	$.getJSON(
+	"/car/queryByPlateNumber",
+	{
+		plate_number: query,
+		car_owner_id: car_owner_id,
+		car_id: car_id
+	},
+	function(data){
+		if (data.status == false)
+			toastr.error(data.message);
+		else{
+			if (car_id == -1){
+				var list = new Array();
+				for (index in data.message.list){
+					list[index] = {"value": data.message.list[index].plate_number, "data": null};
+				}
+				var result = {
+					suggestions: list
+				};
+				done(result);
+			}
+			else{
+				var result = {
+					suggestions: [{"value":data.message.plate_number, "data":null}]
+				};
+				done(result);
+			}
+		}
+		}
+	)
+    },
+	showNoSuggestionNotice: true,
+	noSuggestionNotice: '车辆信息未登记',
+	appendTo: '#suggestions-container',
+	});
+}

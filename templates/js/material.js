@@ -82,7 +82,7 @@ function select_by_name(){
 			if(data.message == 'None')
 				toastr.warning('库中没有此材料!');
 			else
-				toastr.info("材料编号：" + data.message.id);
+				toastr.info('材料编号：' + data.message.id + ' 库存：' + data.message.repair_material_has_amount);
 		}
 		}
 	)
@@ -125,18 +125,18 @@ function select_by_id(){
 	)
 }
 
-function select_by_id_for_update(){
+function select_by_name_for_update(){
 	$.getJSON(
-	url + "/selectById", 
+	url + "/selectByName", 
 	{
-		material_id:$("#repair_material_id").val()
+		repair_material_name:$("#repair_material_name").val()
 	},
 	function(data){
 		if (data.status == false)
 			toastr.error(data.message);
 		else{
 			if(data.message == 'None')
-				toastr.warning('材料编号不存在!');
+				toastr.warning('库中没有此材料!');
 			else{
 				var item = data.message;
 				var check_ = '<div class="container xlarge"><table class="bordered">' + 
@@ -152,17 +152,17 @@ function select_by_id_for_update(){
 	)
 }
 
-function delete_by_id(){
+function delete_by_name(){
 	$.getJSON(
-	url + '/delete',
+	url + '/deleteByName',
 	{
-		repair_material_id:$("#repair_material_id").val()
+		repair_material_name:$("#repair_material_name").val()
 	},
 	function(data){
 		if (data.status == false)
 			toastr.error(data.message);
 		else{
-			toastr.info('删除成功，材料编号：' + $("#repair_project_id").val());
+			toastr.info('删除成功，材料名称：' + $("#repair_material_name").val());
 			only_box_close();
 			ready();
 		}
@@ -194,8 +194,8 @@ function add_info_tr(item, start){
 
 function redo(){
 	var check_ = '<div class="container xlarge"><table class="bordered">' + 
-		'<thead><tr><th>材料编号</th><th>操作</th></tr></thead>' + 
-		'<tr><td><input id="repair_material_id" type="number" placeholder="请输入需要删除的材料编号"/></td><td><input type="button" value="确定" onclick="check_input(delete_by_id)"/></td></tr>'+
+		'<thead><tr><th>材料名称</th><th>操作</th></tr></thead>' + 
+		'<tr><td><input id="repair_material_name" type="text" placeholder="请输入需要删除的材料名称"/><div id="suggestions-container"></div></td><td><input type="button" value="确定" onclick="check_input(delete_by_name)"/></td></tr>'+
 		'</table></div>';
 	
 	fancy_box(check_);
@@ -203,8 +203,8 @@ function redo(){
 
 function update(){
 	var check_ = '<div class="container xlarge"><table class="bordered">' + 
-		'<thead><tr><th>材料编号</th><th>操作</th></tr></thead>' + 
-		'<tr><td><input id="repair_material_id" type="number" placeholder="请输入需要更新的材料编号"/></td><td><input type="button" value="确定" onclick="check_input(select_by_id_for_update)"/></td></tr>'+
+		'<thead><tr><th>材料名称</th><th>操作</th></tr></thead>' + 
+		'<tr><td><input id="repair_material_name" type="text" placeholder="请输入需要更新的材料名称"/><div id="suggestions-container"></div></td><td><input type="button" value="确定" onclick="check_input(select_by_name_for_update)"/></td></tr>'+
 		'</table></div>';
 	
 	fancy_box(check_);
@@ -213,8 +213,10 @@ function update(){
 function search(){
 	var check_ = '<div class="container xlarge"><table class="bordered">' + 
 		'<thead><tr><th>材料名称</th><th>操作</th></tr></thead>' + 
-		'<tr><td><input id="repair_material_name" type="text" placeholder="请输入需要查询的材料名称"/></td><td><input type="button" value="确定" onclick="check_input(select_by_name)"/></td></tr>'+
+		'<tr><td><input id="repair_material_name" type="text" placeholder="请输入需要查询的材料名称"/><div id="suggestions-container"></div></td><td><input type="button" value="确定" onclick="check_input(select_by_name)"/></td></tr>'+
 		'</table></div>';
 	
 	fancy_box(check_);
+	
+	get_suggestion_repair_material_name();
 }

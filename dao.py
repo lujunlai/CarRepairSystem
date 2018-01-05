@@ -247,10 +247,10 @@ class CarDao(db.Model):
 
     # 删除记录
     @staticmethod
-    def delete(car_id):
+    def delete(plate_number):
         update_dict = dict()
         update_dict['is_delete'] = True
-        CarDao.query.filter_by(id=car_id).update(update_dict)
+        CarDao.query.filter_by(plate_number=plate_number).update(update_dict)
         # db.session.commit()
 
     # 删除记录
@@ -278,11 +278,20 @@ class CarDao(db.Model):
     def select_by_plate_number(plate_number):
         return CarDao.query.filter_by(plate_number=plate_number, is_delete=False).first()
 
+    # 通过car_owner_id, plate_number模糊查询
+    @staticmethod
+    def query_by_plate_number(car_owner_id, plate_number):
+        plate_number = '%' + plate_number + '%'
+        return PageItem(CarDao.query.filter_by(car_owner_id=car_owner_id, is_delete=False)
+                        .filter(CarDao.plate_number.like(plate_number)).all(),
+                        CarDao.query.filter_by(car_owner_id=car_owner_id, is_delete=False)
+                        .filter(CarDao.plate_number.like(plate_number)).count())
+
     # 通过car_owner_id查询
     @staticmethod
     def select_by_car_owner_id(car_owner_id, start, page_size):
-        return PageItem(CarDao.query.filter_by(car_owner_id=car_owner_id, is_delete=False).order_by(CarDao.update_time.desc())
-                        .offset(start).limit(page_size).all(),
+        return PageItem(CarDao.query.filter_by(car_owner_id=car_owner_id, is_delete=False)
+                        .order_by(CarDao.update_time.desc()).offset(start).limit(page_size).all(),
                         CarDao.query.filter_by(car_owner_id=car_owner_id, is_delete=False).count())
 
     def __repr__(self):
@@ -455,17 +464,17 @@ class RepairMaterialDao(db.Model):
 
     # 删除记录
     @staticmethod
-    def delete(repair_material_id):
+    def delete(repair_material_name):
         update_dict = dict()
         update_dict['is_delete'] = True
-        RepairMaterialDao.query.filter_by(id=repair_material_id).update(update_dict)
+        RepairMaterialDao.query.filter_by(repair_material_name=repair_material_name).update(update_dict)
         # db.session.commit()
 
     # 查询记录
     @staticmethod
     def select(start, page_size):
-        return PageItem(RepairMaterialDao.query.filter_by(is_delete=False).order_by(RepairMaterialDao.update_time.desc())
-                        .offset(start).limit(page_size).all(),
+        return PageItem(RepairMaterialDao.query.filter_by(is_delete=False)
+                        .order_by(RepairMaterialDao.update_time.desc()).offset(start).limit(page_size).all(),
                         RepairMaterialDao.query.filter_by(is_delete=False).count())
 
     # 通过repair_material_id查询
@@ -477,6 +486,15 @@ class RepairMaterialDao(db.Model):
     @staticmethod
     def select_by_name(repair_material_name):
         return RepairMaterialDao.query.filter_by(repair_material_name=repair_material_name, is_delete=False).first()
+
+    # 通过repair_material_name模糊查询
+    @staticmethod
+    def query_by_name(repair_material_name):
+        repair_material_name = '%' + repair_material_name + '%'
+        return PageItem(RepairMaterialDao.query.filter(RepairMaterialDao.repair_material_name.
+                                                       like(repair_material_name)).filter_by(is_delete=False).all(),
+                        RepairMaterialDao.query.filter(RepairMaterialDao.repair_material_name.like(repair_material_name)
+                                                       ).filter_by(is_delete=False).count())
 
     def __repr__(self):
         return '<RepairMaterial %r>' % self.id
